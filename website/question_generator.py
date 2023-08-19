@@ -10,7 +10,7 @@ def question_generator(note, type_of_question='true or false', difficulty='mediu
     openai.api_key = openai_key()
 
     # Set up the prompt for openAI API
-    max_note_length = 800  # Define the maximum length
+    max_note_length = 200  # Define the maximum length
     if len(note) > max_note_length:
         start_idx = random.randint(0, len(note) - max_note_length)
         truncated_note = note[start_idx:start_idx + max_note_length]
