@@ -91,7 +91,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
         questionTypes.push('closed question');
     }
 
-    let numQuestionsPerType = Math.floor(numQuestions / questionTypes.length);
+    let numQuestionsPerType = Math.round(numQuestions / questionTypes.length);
 
     // Create a container div element for the progress bar
     var containerDiv = document.createElement('div');
@@ -118,6 +118,11 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
     for (let i = 0; i < questionTypes.length; i++) {
         let type_of_question = questionTypes[i];
+
+        // If cannot divide questions equally, add remaining to the last type
+        if ((numQuestions % questionTypes.length != 0)&&(i == questionTypes.length-1)) {
+            numQuestionsPerType += numQuestions - numQuestionsPerType*questionTypes.length
+        }
 
         for (let j = 0; j < numQuestionsPerType; j++) {
             fetch('/question', {

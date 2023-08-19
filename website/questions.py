@@ -17,9 +17,11 @@ def get_question():
     random_note = Note.query.filter_by(user_id=current_user.id).order_by(func.random()).first()
     if random_note:
 
-        question, answer = question_generator(random_note.data,
-                                              type_of_question=type_of_question,
-                                              difficulty=difficulty)
+        #question, answer = question_generator(random_note.data,
+        #                                      type_of_question=type_of_question,
+        #                                      difficulty=difficulty)
+        question = "helloooo how are you"
+        answer = "ok"
 
         # Normalize the value of answer for true or false questions
         if type_of_question == 'true or false':
