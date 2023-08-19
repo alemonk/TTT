@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Personalized Test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .progress-bar {
+            height: 20px;
+            background-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+    {% block title %}Personalized Test{% endblock %}
+    {% block content %}
+
+    <br />
+    <h3 align="center">Personalized Test</h3>
+
+    <br />
+    <div align="center">
+        <!-- Difficulty slider -->
+        <p>Difficulty:</p>
+        <input type="range" min="1" max="3" value="2" class="slider" id="difficultySlider">
+        <p><span id="difficulty"></span></p>
+
+        <!-- Number of questions slider -->
+        <p>Number of questions:</p>
+        <input type="range" min="5" max="30" value="10" class="slider" id="numQuestionsSlider">
+        <p><span id="numQuestions"></span></p>
+
+        <!-- Question type checkboxes -->
+        <p>Type of questions:</p>
+        <input type="checkbox" id="openQuestionCheckbox" checked> Open Question<br>
+        <input type="checkbox" id="trueFalseCheckbox" checked> True or False<br>
+        <input type="checkbox" id="closedQuestionCheckbox" checked> Closed Question<br>
+
+        <!-- Create test button -->
+        <br />
+        <button type="button" class="btn btn-primary" id="createTestButton">
+            Create Test
+        </button>
+    </div>
+
+    <!-- Output divs -->
+    <br />
+    <div id="output" style="margin-top: 10px; text-align: left;"></div>
+
+<script>
+let difficultySlider = document.getElementById("difficultySlider");
+let difficultyOutput = document.getElementById("difficulty");
+difficultyOutput.innerHTML = difficultySlider.value == 1 ? "Easy" : (difficultySlider.value == 2 ? "Medium" : "Hard");
+
+difficultySlider.oninput = function() {
+    difficultyOutput.innerHTML = this.value == 1 ? "Easy" : (this.value == 2 ? "Medium" : "Hard");
+}
+
+let numQuestionsSlider = document.getElementById("numQuestionsSlider");
+let numQuestionsOutput = document.getElementById("numQuestions");
+numQuestionsOutput.innerHTML = numQuestionsSlider.value;
+
+numQuestionsSlider.oninput = function() {
+    numQuestionsOutput.innerHTML = this.value;
+}
+
+// Clear the content of the output div element
+function clearOutput() {
+    document.getElementById('output').innerHTML = '';
+}
+
+// Add an event listener to the createTestButton element
+document.getElementById('createTestButton').addEventListener('click', function() {
+    clearOutput();
+
+    let difficulty = document.getElementById("difficulty").innerHTML;
+    let numQuestions = document.getElementById("numQuestions").innerHTML;
+
+    let openQuestionCheckbox = document.getElementById("openQuestionCheckbox");
+    let trueFalseCheckbox = document.getElementById("trueFalseCheckbox");
+    let closedQuestionCheckbox = document.getElementById("closedQuestionCheckbox");
+
+    let questionTypes = [];
+    if (openQuestionCheckbox.checked) {
+        questionTypes.push('open question');
+    }
+    if (trueFalseCheckbox.checked) {
+        questionTypes.push('true or false');
+    }
+    if (closedQuestionCheckbox.checked) {
+        questionTypes.push('closed question');
+    }
+
+    let numQuestionsPerType = Math.floor(numQuestions / questionTypes.length);
+
+    // Create a container div element for the progress bar
+    var containerDiv = document.createElement('div');
+    containerDiv.style.display = 'block';
+    containerDiv.style.width = '100%';
+
+    // Create a progress bar element
+    var progressBar = document.createElement('div');
+    progressBar.className = 'progress-bar';
+    progressBar.role = 'progressbar';
+    progressBar.style.width = '0%';
+
+    containerDiv.appendChild(progressBar);
+
+    // Create a progress text element
+    var progressText = document.createElement('p');
+    progressText.textContent = '0/' + numQuestions;
+    containerDiv.appendChild(progressText);
+
+    var outputDiv = document.getElementById('output');
+    outputDiv.appendChild(containerDiv);
+
+    let numQuestionsGenerated = 0;
+
+    for (let i = 0; i < questionTypes.length; i++) {
+        let type_of_question = questionTypes[i];
+
+        for (let j = 0; j < numQuestionsPerType; j++) {
+            fetch('/question', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({difficulty: difficulty, type_of_question: type_of_question})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Update the progress bar and text
+                    numQuestionsGenerated++;
+                    let progressPercentage = Math.floor((numQuestionsGenerated / numQuestions) * 100);
+                    progressBar.style.width = progressPercentage + '%';
+                    progressText.textContent = numQuestionsGenerated + '/' + numQuestions;
+
+                    // Create a container div element for the question and answer
+                    var containerDiv = document.createElement('div');
+                    containerDiv.style.display = 'block';
+                    containerDiv.style.borderStyle = 'solid';
+                    containerDiv.style.borderWidth = '1px';
+                    containerDiv.style.borderColor = '#007bff';
+                    containerDiv.style.padding = '10px';
+                    containerDiv.style.marginBottom = '10px';
+                    outputDiv.appendChild(containerDiv);
+
+                    // Create a p element for the question
+                    var questionP = document.createElement('p');
+                    questionP.textContent = data.question;
+                    containerDiv.appendChild(questionP);
+
+                    if (type_of_question == 'open question') {
+                        // Create a textarea element for user input
+                        var textarea = document.createElement('textarea');
+                        textarea.rows = 4;
+                        textarea.cols = 50;
+                        containerDiv.appendChild(textarea);
+
+                        // Create a submit button for user input
+                        var submitButton = document.createElement('button');
+                        submitButton.type = 'button';
+                        submitButton.className = 'btn btn-primary';
+                        submitButton.style.marginTop = '10px';
+                        submitButton.textContent = 'Submit';
+                        containerDiv.appendChild(submitButton);
+
+                        // Add an event listener to the submit button
+                        submitButton.addEventListener('click', function() {
+                            var guess = textarea.value;
+                            var question = data.question;
+                            var answer = data.answer;
+                            fetch('/check_open_question', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ guess: guess, question: question, answer: answer })
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    var answerP = document.createElement('p');
+                                    answerP.textContent = data.response;
+                                    containerDiv.appendChild(answerP);
+                                });
+                        });
+                    } else if (type_of_question == 'true or false') {
+                        // Create answer buttons
+                        var answers = [
+                            { label: 'True', color: '#007bff' },
+                            { label: 'False', color: '#007bff' }
+                        ];
+
+                        for (var k = 0; k < answers.length; k++) {
+                            var answerButton = document.createElement('button');
+                            answerButton.type = 'button';
+                            answerButton.className = 'btn btn-primary';
+                            answerButton.style.marginRight = '5px';
+                            answerButton.textContent = answers[k].label;
+                            answerButton.style.backgroundColor = answers[k].color;
+                            containerDiv.appendChild(answerButton);
+
+                            answerButton.addEventListener('click', function() {
+                                var guess = this.textContent;
+                                var answer = data.answer;
+                                if (guess === answer) {
+                                    this.style.backgroundColor = '#28a745';
+
+                                    var answerP = document.createElement('p');
+                                    answerP.textContent = data.response;
+                                    containerDiv.appendChild(answerP);
+                                } else {
+                                    this.style.backgroundColor = '#dc3545';
+
+                                    var answerP = document.createElement('p');
+                                    answerP.textContent = 'Incorrect. The correct answer is ' + answer + '.';
+                                    containerDiv.appendChild(answerP);
+                                }
+                            });
+                        }
+                    } else if (type_of_question == 'closed question') {
+                        // Create answer buttons
+                        var answers = [
+                            { label: 'A', color: '#007bff' },
+                            { label: 'B', color: '#007bff' },
+                            { label: 'C', color: '#007bff' },
+                            { label: 'D', color: '#007bff' }
+                        ];
+
+                        for (var k = 0; k < answers.length; k++) {
+                            var answerButton = document.createElement('button');
+                            answerButton.type = 'button';
+                            answerButton.className = 'btn btn-primary';
+                            answerButton.style.marginRight = '5px';
+                            answerButton.textContent = answers[k].label;
+                            answerButton.style.backgroundColor = answers[k].color;
+                            containerDiv.appendChild(answerButton);
+
+                            answerButton.addEventListener('click', function() {
+                                var guess = this.textContent;
+                                var answer = data.answer;
+                                if (guess === answer) {
+                                    this.style.backgroundColor = '#28a745';
+
+                                    var answerP = document.createElement('p');
+                                    answerP.textContent = 'Correct!';
+                                    containerDiv.appendChild(answerP);
+                                } else {
+                                    this.style.backgroundColor = '#dc3545';
+
+                                    var answerP = document.createElement('p');
+                                    answerP.textContent = 'Incorrect. The correct answer is ' + answer + '.';
+                                    containerDiv.appendChild(answerP);
+                                }
+                            });
+                        }
+                    }
+                });
+        }
+    }
+});
+</script>
+{% endblock %}
+</body>
+</html>

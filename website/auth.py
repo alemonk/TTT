@@ -75,3 +75,9 @@ def sign_up():
 @login_required
 def quiz_me():
     return render_template("quiz_me.html", user=current_user)
+
+
+@auth.route('/personalized_test')
+@login_required
+def personalized_test():
+    return render_template("personalized_test.html", user=current_user)
