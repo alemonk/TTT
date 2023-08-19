@@ -1,9 +1,10 @@
 import openai
+from website.static.openai_key import openai_key
 
 
 def open_question_check(guess, question, answer):
     # Set your OpenAI API key
-    openai.api_key = "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"
+    openai.api_key = openai_key()
 
     # Construct the prompt
     prompt = f"""
@@ -18,7 +19,7 @@ def open_question_check(guess, question, answer):
 
     # Generate AI response
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-0613",
+        model="gpt-3.5-turbo",
         messages=[{
             "role": "user",
             "content": prompt

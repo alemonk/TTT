@@ -1,10 +1,11 @@
 import openai
 import random
+from website.static.openai_key import openai_key
 
 
 def question_generator(note, type_of_question='true or false', difficulty='medium'):
     # Set your OpenAI API key
-    openai.api_key = "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"
+    openai.api_key = openai_key()
 
     # Set up the prompt for openAI API
     max_note_length = 500  # Define the maximum length
@@ -15,13 +16,13 @@ def question_generator(note, type_of_question='true or false', difficulty='mediu
         truncated_note = note
 
     prompt_question = "Kind of question: " + type_of_question + \
-                      ". Difficulty: " + difficulty + \
-                      ". Ask one random question based on the following topic: \n" + truncated_note + \
-                      ". The output must be in the format 'QUESTION: ... ? CORRECT ANSWER: ... .'"
+                      "\nDifficulty: " + difficulty + \
+                      "\nAsk one random question based on the following topic:\n" + truncated_note + \
+                      "\n\nThe output must be in the format 'QUESTION: ... ? CORRECT ANSWER: ... .'"
 
     # Generate question
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-0613",
+        model="gpt-3.5-turbo",
         messages=[{
             "role": "user",
             "content": prompt_question
