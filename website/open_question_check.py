@@ -35,5 +35,4 @@ def open_question_check(guess, question, answer):
     response = get_openai_response_with_backoff(prompt)
     ai_output = response['choices'][0]['message']['content'].strip()
     print('AI response: ' + ai_output)
-
     return ai_output

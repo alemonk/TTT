@@ -18,7 +18,9 @@ def get_openai_response_with_backoff(prompt_question):
             "role": "user",
             "content": prompt_question
         }],
-        temperature=1
+        temperature=0.8,
+        frequency_penalty=0.3,
+        presence_penalty=0.8,
     )
     return response
 
@@ -29,10 +31,13 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
 
     prompt_question = "Kind of question: " + type_of_question + \
                       "\nDifficulty: " + difficulty + \
-                      "\nAsk one random question using a few sentences inside the following:\n" + truncated_note + \
+                      "\nAsk one random question using a few sentences from the following:\n" + truncated_note + \
                       "\n\nThe output must be in the format 'QUESTION: [...] ? CORRECT ANSWER: [...] .' " + \
-                      "(note: in case of 'closed question' there must be A B C or D as possible answers)"
+                      "\n\nNote 1: In the case of a 'closed question' there must be A, B, C, or D as possible answers." + \
+                      "\nNote 2: The language MUST be the same as the note, which is not necessarily English." + \
+                      "\nNote 3: In the case of a 'true or false' question, the answer is TRUE/FALSE regardless of the language."
 
+    # Generate ai response
     response = get_openai_response_with_backoff(prompt_question)
     ai_output = response['choices'][0]['message']['content']
     print('AI response: ' + ai_output)
@@ -40,6 +45,18 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
     # Split AI generated output into question and answer
     [question, answer] = split_string(ai_output)
 
+    # Check if generated question is valid
+    is_valid = check_question_validity(question, answer, type_of_question)
+
+    # If generated question is not valid, generate a new one
+    while not is_valid:
+        response = get_openai_response_with_backoff(prompt_question)
+        ai_output = response['choices'][0]['message']['content']
+        print('AI response: ' + ai_output)
+        [question, answer] = split_string(ai_output)
+        is_valid = check_question_validity(question, answer, type_of_question)
+
+    # Return valid question and answer
     return [question, answer]
 
 
@@ -53,10 +70,29 @@ def select_random_note_portion(note, max_note_length=200):
     return truncated_note
 
 
+def check_question_validity(question: str, answer: str, type_of_question: str) -> bool:
+    # Check if the question is a valid true or false question
+    if type_of_question == 'true or false':
+        if answer.split('.')[0].strip() not in ['TRUE', 'FALSE', 'True', 'False', 'true', 'false']:
+            print('Question not valid. Regenerate...')
+            return False
+
+    # Check if the question is a valid-closed question
+    if type_of_question == 'closed question':
+        options = re.findall(r'\b[A-D]\)', question)
+        if len(options) < 2:
+            print('Question not valid. Regenerate...')
+            return False
+
+    # If all checks passed, return True
+    print('Valid question!')
+    return True
+
+
 def split_string(input_string: str) -> list:
     try:
         question = re.split(r'QUESTION:\s*', input_string)[1].split('CORRECT ANSWER:')[0]
-        answer = re.split(r'CORRECT ANSWER:\s*', input_string)[1].split('.')[0]
+        answer = re.split(r'CORRECT ANSWER:\s*', input_string)[1]
         return [question, answer]
     except Exception as e:
         print(f"An error occurred while splitting the AI output: {e}")

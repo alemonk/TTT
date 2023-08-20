@@ -25,19 +25,22 @@
         <input type="range" min="1" max="3" value="2" class="slider" id="difficultySlider">
         <p><span id="difficulty"></span></p>
 
-        <!-- Number of questions slider -->
-        <p>Number of questions:</p>
-        <input type="range" min="5" max="30" value="10" class="slider" id="numQuestionsSlider">
-        <p><span id="numQuestions"></span></p>
+        <!-- Number of open questions slider -->
+        <p>Number of open questions:</p>
+        <input type="range" min="0" max="10" value="3" class="slider" id="numOpenQuestionsSlider">
+        <p><span id="numOpenQuestions"></span></p>
 
-        <!-- Question type checkboxes -->
-        <p>Type of questions:</p>
-        <input type="checkbox" id="openQuestionCheckbox" checked> Open Question<br>
-        <input type="checkbox" id="trueFalseCheckbox" checked> True or False<br>
-        <input type="checkbox" id="closedQuestionCheckbox" checked> Closed Question<br>
+        <!-- Number of true or false questions slider -->
+        <p>Number of true or false questions:</p>
+        <input type="range" min="0" max="10" value="3" class="slider" id="numTrueFalseQuestionsSlider">
+        <p><span id="numTrueFalseQuestions"></span></p>
+
+        <!-- Number of closed questions slider -->
+        <p>Number of closed questions:</p>
+        <input type="range" min="0" max="10" value="3" class="slider" id="numClosedQuestionsSlider">
+        <p><span id="numClosedQuestions"></span></p>
 
         <!-- Create test button -->
-        <br />
         <button type="button" class="btn btn-primary" id="createTestButton">
             Create Test
         </button>
@@ -56,12 +59,28 @@ difficultySlider.oninput = function() {
     difficultyOutput.innerHTML = this.value == 1 ? "Easy" : (this.value == 2 ? "Medium" : "Hard");
 }
 
-let numQuestionsSlider = document.getElementById("numQuestionsSlider");
-let numQuestionsOutput = document.getElementById("numQuestions");
-numQuestionsOutput.innerHTML = numQuestionsSlider.value;
+let numOpenQuestionsSlider = document.getElementById("numOpenQuestionsSlider");
+let numOpenQuestionsOutput = document.getElementById("numOpenQuestions");
+numOpenQuestionsOutput.innerHTML = numOpenQuestionsSlider.value;
 
-numQuestionsSlider.oninput = function() {
-    numQuestionsOutput.innerHTML = this.value;
+numOpenQuestionsSlider.oninput = function() {
+    numOpenQuestionsOutput.innerHTML = this.value;
+}
+
+let numTrueFalseQuestionsSlider = document.getElementById("numTrueFalseQuestionsSlider");
+let numTrueFalseQuestionsOutput = document.getElementById("numTrueFalseQuestions");
+numTrueFalseQuestionsOutput.innerHTML = numTrueFalseQuestionsSlider.value;
+
+numTrueFalseQuestionsSlider.oninput = function() {
+    numTrueFalseQuestionsOutput.innerHTML = this.value;
+}
+
+let numClosedQuestionsSlider = document.getElementById("numClosedQuestionsSlider");
+let numClosedQuestionsOutput = document.getElementById("numClosedQuestions");
+numClosedQuestionsOutput.innerHTML = numClosedQuestionsSlider.value;
+
+numClosedQuestionsSlider.oninput = function() {
+    numClosedQuestionsOutput.innerHTML = this.value;
 }
 
 // Clear the content of the output div element
@@ -74,24 +93,13 @@ document.getElementById('createTestButton').addEventListener('click', function()
     clearOutput();
 
     let difficulty = document.getElementById("difficulty").innerHTML;
-    let numQuestions = document.getElementById("numQuestions").innerHTML;
+    let numOpenQuestions = parseInt(document.getElementById("numOpenQuestions").innerHTML);
+    let numTrueFalseQuestions = parseInt(document.getElementById("numTrueFalseQuestions").innerHTML);
+    let numClosedQuestions = parseInt(document.getElementById("numClosedQuestions").innerHTML);
+    let numQuestions = numOpenQuestions + numTrueFalseQuestions + numClosedQuestions;
 
-    let openQuestionCheckbox = document.getElementById("openQuestionCheckbox");
-    let trueFalseCheckbox = document.getElementById("trueFalseCheckbox");
-    let closedQuestionCheckbox = document.getElementById("closedQuestionCheckbox");
-
-    let questionTypes = [];
-    if (openQuestionCheckbox.checked) {
-        questionTypes.push('open question');
-    }
-    if (trueFalseCheckbox.checked) {
-        questionTypes.push('true or false');
-    }
-    if (closedQuestionCheckbox.checked) {
-        questionTypes.push('closed question');
-    }
-
-    let numQuestionsPerType = Math.round(numQuestions / questionTypes.length);
+    let questionTypes = ['open question', 'true or false', 'closed question'];
+    let numQuestionTypesPerType = [numOpenQuestions, numTrueFalseQuestions, numClosedQuestions];
 
     // Create a container div element for the progress bar
     var containerDiv = document.createElement('div');
@@ -116,15 +124,14 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
     let numQuestionsGenerated = 0;
 
+    // Create an array to store the generated questions
+    let generated_questions = [];
+
     for (let i = 0; i < questionTypes.length; i++) {
         let type_of_question = questionTypes[i];
+        let numQuestionsPerType = numQuestionTypesPerType[i];
 
-        // If cannot divide questions equally, add remaining to the last type
-        if ((numQuestions % questionTypes.length != 0)&&(i == questionTypes.length-1)) {
-            numQuestionsPerType += numQuestions - numQuestionsPerType*questionTypes.length
-        }
-
-        for (let j = 0; j < numQuestionsPerType; j++) {
+        for (let j=0; j < numQuestionTypesPerType[i]; j++) {
             fetch('/question', {
                 method: 'POST',
                 headers: {
@@ -136,129 +143,69 @@ document.getElementById('createTestButton').addEventListener('click', function()
                 .then(data => {
                     // Update the progress bar and text
                     numQuestionsGenerated++;
-                    let progressPercentage = Math.floor((numQuestionsGenerated / numQuestions) * 100);
+                    let progressPercentage = Math.floor((numQuestionsGenerated / numQuestionTypesPerType.reduce((a, b) => parseInt(a) + parseInt(b), 0)) * 100);
                     progressBar.style.width = progressPercentage + '%';
-                    progressText.textContent = numQuestionsGenerated + '/' + numQuestions;
+                    progressText.textContent = numQuestionsGenerated + '/' + (numQuestionTypesPerType.reduce((a, b) => parseInt(a) + parseInt(b), 0));
 
-                    // Create a container div element for the question and answer
-                    var containerDiv = document.createElement('div');
-                    containerDiv.style.display = 'block';
-                    containerDiv.style.borderStyle = 'solid';
-                    containerDiv.style.borderWidth = '1px';
-                    containerDiv.style.borderColor = '#007bff';
-                    containerDiv.style.padding = '10px';
-                    containerDiv.style.marginBottom = '10px';
-                    outputDiv.appendChild(containerDiv);
+                    // Add the generated question to the generated_questions array
+                    generated_questions.push(data);
 
-                    // Create a p element for the question
-                    var questionP = document.createElement('p');
-                    questionP.textContent = data.question;
-                    containerDiv.appendChild(questionP);
+                    // Check if all questions have been generated
+                    if (numQuestionTypesPerType.reduce((a, b) => parseInt(a) + parseInt(b), 0) == generated_questions.length) {
+                        // All questions have been generated, so display them on the page
+                        for (let k=0; k < generated_questions.length; k++) {
+                            let data=generated_questions[k];
 
-                    if (type_of_question == 'open question') {
-                        // Create a textarea element for user input
-                        var textarea = document.createElement('textarea');
-                        textarea.style.width = '100%';
-                        textarea.style.boxSizing = 'border-box';
-                        textarea.rows = 4;
-                        containerDiv.appendChild(textarea);
+                            // Create a container div element for the question and answer
+                            var containerDiv=document.createElement('div');
+                            containerDiv.style.display='block';
+                            containerDiv.style.borderStyle='solid';
+                            containerDiv.style.borderWidth='1px';
+                            containerDiv.style.borderColor='#007bff';
+                            containerDiv.style.padding='10px';
+                            containerDiv.style.marginBottom='10px';
+                            outputDiv.appendChild(containerDiv);
 
-                        // Create a submit button for user input
-                        var submitButton = document.createElement('button');
-                        submitButton.type = 'button';
-                        submitButton.className = 'btn btn-primary';
-                        submitButton.style.marginTop = '10px';
-                        submitButton.textContent = 'Submit';
-                        containerDiv.appendChild(submitButton);
+                            // Create a p element for the question
+                            var questionP=document.createElement('p');
+                            questionP.textContent=data.question;
+                            containerDiv.appendChild(questionP);
 
-                        // Add an event listener to the submit button
-                        submitButton.addEventListener('click', function() {
-                            var guess = textarea.value;
-                            var question = data.question;
-                            var answer = data.answer;
-                            fetch('/check_open_question', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ guess: guess, question: question, answer: answer })
-                            })
-                                .then(response => response.json())
-                                .then(data => {
-                                    var answerP = document.createElement('p');
-                                    answerP.textContent = data.response;
-                                    containerDiv.appendChild(answerP);
+                            if (type_of_question=='open question') {
+                                // Create a textarea element for user input
+                                var textarea=document.createElement('textarea');
+                                textarea.rows=4;
+                                textarea.cols=50;
+                                containerDiv.appendChild(textarea);
+
+                                // Create a submit button for user input
+                                var submitButton=document.createElement('button');
+                                submitButton.type='button';
+                                submitButton.className='btn btn-primary';
+                                submitButton.style.marginTop='10px';
+                                submitButton.textContent='Submit';
+                                containerDiv.appendChild(submitButton);
+
+                                // Add an event listener to the submit button
+                                submitButton.addEventListener('click', function() {
+                                    var guess=textarea.value;
+                                    var question=data.question;
+                                    var answer=data.answer;
+                                    fetch('/check_open_question', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ guess: guess, question: question, answer: answer })
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            var answerP = document.createElement('p');
+                                            answerP.textContent = data.response;
+                                            containerDiv.appendChild(answerP);
+                                        });
                                 });
-                        });
-                    } else if (type_of_question == 'true or false') {
-                        // Create answer buttons
-                        var answers = [
-                            { label: 'True', color: '#007bff' },
-                            { label: 'False', color: '#007bff' }
-                        ];
-
-                        for (var k = 0; k < answers.length; k++) {
-                            var answerButton = document.createElement('button');
-                            answerButton.type = 'button';
-                            answerButton.className = 'btn btn-primary';
-                            answerButton.style.marginRight = '5px';
-                            answerButton.textContent = answers[k].label;
-                            answerButton.style.backgroundColor = answers[k].color;
-                            containerDiv.appendChild(answerButton);
-
-                            answerButton.addEventListener('click', function() {
-                                var guess = this.textContent;
-                                var answer = data.answer;
-                                if (guess === answer) {
-                                    this.style.backgroundColor = '#28a745';
-
-                                    var answerP = document.createElement('p');
-                                    answerP.textContent = 'Correct! ' + answer;
-                                    containerDiv.appendChild(answerP);
-                                } else {
-                                    this.style.backgroundColor = '#dc3545';
-
-                                    var answerP = document.createElement('p');
-                                    answerP.textContent = 'Incorrect. The correct answer is ' + answer + '.';
-                                    containerDiv.appendChild(answerP);
-                                }
-                            });
-                        }
-                    } else if (type_of_question == 'closed question') {
-                        // Create answer buttons
-                        var answers = [
-                            { label: 'A', color: '#007bff' },
-                            { label: 'B', color: '#007bff' },
-                            { label: 'C', color: '#007bff' },
-                            { label: 'D', color: '#007bff' }
-                        ];
-
-                        for (var k = 0; k < answers.length; k++) {
-                            var answerButton = document.createElement('button');
-                            answerButton.type = 'button';
-                            answerButton.className = 'btn btn-primary';
-                            answerButton.style.marginRight = '5px';
-                            answerButton.textContent = answers[k].label;
-                            answerButton.style.backgroundColor = answers[k].color;
-                            containerDiv.appendChild(answerButton);
-
-                            answerButton.addEventListener('click', function() {
-                                var guess = this.textContent;
-                                var answer = data.answer;
-                                if (guess === answer) {
-                                    this.style.backgroundColor = '#28a745';
-
-                                    var answerP = document.createElement('p');
-                                    answerP.textContent = 'Correct! ' + answer;
-                                    containerDiv.appendChild(answerP);
-                                } else {
-                                    this.style.backgroundColor = '#dc3545';
-
-                                    var answerP = document.createElement('p');
-                                    answerP.textContent = 'Incorrect. The correct answer is ' + answer + '.';
-                                    containerDiv.appendChild(answerP);
-                                }
-                            });
+                            }
                         }
                     }
                 });
