@@ -41,8 +41,8 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
                       "\nAsk one random question using a few sentences from the following:\n" + truncated_note + \
                       "\n\nThe output must be in the format 'QUESTION: [...] ? CORRECT ANSWER: [...] .' " + \
                       "\n\nNote 1: In the case of a 'closed question' there must be A, B, C, or D as possible answers." + \
-                      "\nNote 2: The language MUST be the same as the note, which is not necessarily English." + \
-                      "\nNote 3: In the case of a 'true or false' question, the answer is TRUE/FALSE regardless of the language."
+                      "\nNote 2: In the case of a 'true or false' question, the answer is TRUE/FALSE regardless of the language."
+                      # "\nNote 3: The language MUST be the same as the note, which is not necessarily English."
 
     # Generate ai response
     response = get_openai_response_with_backoff(prompt_question)

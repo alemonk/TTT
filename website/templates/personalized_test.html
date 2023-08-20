@@ -27,17 +27,17 @@
 
         <!-- Number of open questions slider -->
         <p>Number of open questions:</p>
-        <input type="range" min="0" max="10" value="3" class="slider" id="numOpenQuestionsSlider">
+        <input type="range" min="0" max="10" value="1" class="slider" id="numOpenQuestionsSlider">
         <p><span id="numOpenQuestions"></span></p>
 
         <!-- Number of true or false questions slider -->
         <p>Number of true or false questions:</p>
-        <input type="range" min="0" max="10" value="3" class="slider" id="numTrueFalseQuestionsSlider">
+        <input type="range" min="0" max="10" value="1" class="slider" id="numTrueFalseQuestionsSlider">
         <p><span id="numTrueFalseQuestions"></span></p>
 
         <!-- Number of closed questions slider -->
         <p>Number of closed questions:</p>
-        <input type="range" min="0" max="10" value="3" class="slider" id="numClosedQuestionsSlider">
+        <input type="range" min="0" max="10" value="1" class="slider" id="numClosedQuestionsSlider">
         <p><span id="numClosedQuestions"></span></p>
 
         <!-- Create test button -->
@@ -86,6 +86,19 @@ numClosedQuestionsSlider.oninput = function() {
 // Clear the content of the output div element
 function clearOutput() {
     document.getElementById('output').innerHTML = '';
+}
+
+// Create answer buttons and append them to the container div element
+function createAnswerButtons(answers, containerDiv) {
+    for (var i = 0; i < answers.length; i++) {
+        var answerButton = document.createElement('button');
+        answerButton.type = 'button';
+        answerButton.className = 'btn btn-primary';
+        answerButton.style.marginRight = '5px';
+        answerButton.textContent = answers[i].label;
+        answerButton.style.backgroundColor = answers[i].color;
+        containerDiv.appendChild(answerButton);
+    }
 }
 
 // Add an event listener to the createTestButton element
@@ -173,10 +186,9 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
                             if (type_of_question=='open question') {
                                 // Create a textarea element for user input
-                                var textarea = document.createElement('textarea');
-                                textarea.style.width = '100%';
-                                textarea.style.boxSizing = 'border-box';
-                                textarea.rows = 4;
+                                var textarea=document.createElement('textarea');
+                                textarea.rows=4;
+                                textarea.cols=50;
                                 containerDiv.appendChild(textarea);
 
                                 // Create a submit button for user input
@@ -206,6 +218,60 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                             containerDiv.appendChild(answerP);
                                         });
                                 });
+                            } else if (type_of_question == 'true or false') {
+                                // Create answer buttons
+                                var answers = [
+                                    { label: 'True', color: '#007bff' },
+                                    { label: 'False', color: '#007bff' }
+                                ];
+                                createAnswerButtons(answers, containerDiv);
+
+                                // Add an event listener to the answer buttons
+                                var answerButtons = containerDiv.querySelectorAll('button');
+                                for (var i = 0; i < answerButtons.length; i++) {
+                                    answerButtons[i].addEventListener('click', function() {
+                                        var guess = this.textContent;
+                                        if (data.answer.startsWith(guess)) {
+                                            this.style.backgroundColor = '#28a745';
+                                            var answerP = document.createElement('p');
+                                            answerP.textContent = 'Correct! ' + data.answer;
+                                            containerDiv.appendChild(answerP);
+                                        } else {
+                                            this.style.backgroundColor = '#dc3545';
+                                            var answerP = document.createElement('p');
+                                            answerP.textContent = 'Incorrect. The correct answer is ' + data.answer + '.';
+                                            containerDiv.appendChild(answerP);
+                                        }
+                                    });
+                                }
+                            } else if (type_of_question == 'closed question') {
+                                // Create answer buttons
+                                var answers = [
+                                    { label: 'A', color: '#007bff' },
+                                    { label: 'B', color: '#007bff' },
+                                    { label: 'C', color: '#007bff' },
+                                    { label: 'D', color: '#007bff' }
+                                ];
+                                createAnswerButtons(answers, containerDiv);
+
+                                // Add an event listener to the answer buttons
+                                var answerButtons = containerDiv.querySelectorAll('button');
+                                for (var i = 0; i < answerButtons.length; i++) {
+                                    answerButtons[i].addEventListener('click', function() {
+                                        var guess = this.textContent;
+                                        if (data.answer.startsWith(guess)) {
+                                            this.style.backgroundColor = '#28a745';
+                                            var answerP = document.createElement('p');
+                                            answerP.textContent = 'Correct! ' + data.answer;
+                                            containerDiv.appendChild(answerP);
+                                        } else {
+                                            this.style.backgroundColor = '#dc3545';
+                                            var answerP = document.createElement('p');
+                                            answerP.textContent = 'Incorrect. The correct answer is ' + data.answer + '.';
+                                            containerDiv.appendChild(answerP);
+                                        }
+                                    });
+                                }
                             }
                         }
                     }
@@ -213,6 +279,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
         }
     }
 });
+
 </script>
 {% endblock %}
 </body>
