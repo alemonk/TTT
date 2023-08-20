@@ -158,8 +158,9 @@ document.getElementById('createTestButton').addEventListener('click', function()
                     if (type_of_question == 'open question') {
                         // Create a textarea element for user input
                         var textarea = document.createElement('textarea');
+                        textarea.style.width = '100%';
+                        textarea.style.boxSizing = 'border-box';
                         textarea.rows = 4;
-                        textarea.cols = 50;
                         containerDiv.appendChild(textarea);
 
                         // Create a submit button for user input
@@ -212,7 +213,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                     this.style.backgroundColor = '#28a745';
 
                                     var answerP = document.createElement('p');
-                                    answerP.textContent = data.response;
+                                    answerP.textContent = 'Correct! ' + answer;
                                     containerDiv.appendChild(answerP);
                                 } else {
                                     this.style.backgroundColor = '#dc3545';
@@ -248,7 +249,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                     this.style.backgroundColor = '#28a745';
 
                                     var answerP = document.createElement('p');
-                                    answerP.textContent = 'Correct!';
+                                    answerP.textContent = 'Correct! ' + answer;
                                     containerDiv.appendChild(answerP);
                                 } else {
                                     this.style.backgroundColor = '#dc3545';

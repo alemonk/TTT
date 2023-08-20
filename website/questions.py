@@ -1,10 +1,9 @@
 from flask import Blueprint, jsonify, request
 from flask_login import current_user
-from .models import Note
 from sqlalchemy import func
-from .question_generator import question_generator
+from .create_random_question import create_random_question
+from .models import Note
 from .open_question_check import open_question_check
-import time
 
 questions = Blueprint('questions', __name__)
 
@@ -17,11 +16,9 @@ def get_question():
     random_note = Note.query.filter_by(user_id=current_user.id).order_by(func.random()).first()
     if random_note:
 
-        #question, answer = question_generator(random_note.data,
-        #                                      type_of_question=type_of_question,
-        #                                      difficulty=difficulty)
-        question = "helloooo how are you"
-        answer = "ok"
+        question, answer = create_random_question(random_note.data,
+                                                  type_of_question=type_of_question,
+                                                  difficulty=difficulty)
 
         # Normalize the value of answer for true or false questions
         if type_of_question == 'true or false':

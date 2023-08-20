@@ -30,11 +30,8 @@
         </button>
     </div>
     <!-- Output divs -->
-    <br />
     <div id="output" style="margin-top: 10px; text-align: left;"></div>
-    <br />
     <div id="answer-buttons" style="margin-top: 10px;"></div>
-    <br />
     <div id="answer-output" style="margin-top: 10px; text-align: left;"></div>
 
 <script>
@@ -96,8 +93,9 @@ document.getElementById('open-question-button').addEventListener('click', functi
 
             // Create a textarea element for user input
             var textarea = document.createElement('textarea');
+            textarea.style.width = '100%';
+            textarea.style.boxSizing = 'border-box';
             textarea.rows = 4;
-            textarea.cols = 50;
             containerDiv.appendChild(textarea);
 
             // Create a submit button for user input
