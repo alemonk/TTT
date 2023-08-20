@@ -1,12 +1,19 @@
 import backoff
 import openai
 from website.static.openai_key import openai_key
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 # Set your OpenAI API key
 openai.api_key = openai_key()
 
 
-@backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_tries=10)
+def log_backoff(details):
+    logging.info(f"Backing off {details['wait']} seconds after {details['tries']} tries")
+
+
+@backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_tries=10, on_backoff=log_backoff, base=5)
 def get_openai_response_with_backoff(prompt):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
