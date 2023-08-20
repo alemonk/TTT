@@ -15,21 +15,26 @@ def log_backoff(details):
     logging.info(f"Backing off {details['wait']} seconds after {details['tries']} tries")
 
 
-@backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_tries=10, on_backoff=log_backoff, base=5)
+@backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_tries=5, on_backoff=log_backoff, base=5)
 def get_openai_response_with_backoff(prompt_question):
     print('request to openai with backoff')
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{
-            "role": "user",
-            "content": prompt_question
-        }],
-        temperature=0.8,
-        frequency_penalty=0.3,
-        presence_penalty=0.8,
-    )
-    return response
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{
+                "role": "user",
+                "content": prompt_question
+            }],
+            temperature=0.8,
+            frequency_penalty=0.3,
+            presence_penalty=0.8,
+        )
+        response = response['choices'][0]['message']['content']
+        return response
+    except openai.error.RateLimitError as e:
+        return 'QUESTION: A LOT of people are using this app, what do you say? ' + \
+               'CORRECT ANSWER: True'
 
 
 def create_random_question(note, type_of_question='true or false', difficulty='medium'):
@@ -45,8 +50,7 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
                       # "\nNote 3: The language MUST be the same as the note, which is not necessarily English."
 
     # Generate ai response
-    response = get_openai_response_with_backoff(prompt_question)
-    ai_output = response['choices'][0]['message']['content']
+    ai_output = get_openai_response_with_backoff(prompt_question)
     print('AI response: ' + ai_output)
 
     # Split AI generated output into question and answer
@@ -57,8 +61,7 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
 
     # If generated question is not valid, generate a new one
     while not is_valid:
-        response = get_openai_response_with_backoff(prompt_question)
-        ai_output = response['choices'][0]['message']['content']
+        ai_output = get_openai_response_with_backoff(prompt_question)
         print('AI response: ' + ai_output)
         [question, answer] = split_string(ai_output)
         is_valid = check_question_validity(question, answer, type_of_question)
@@ -78,6 +81,10 @@ def select_random_note_portion(note, max_note_length=200):
 
 
 def check_question_validity(question: str, answer: str, type_of_question: str) -> bool:
+    # Check if rpm are too many
+    if question == 'A LOT of people are using this app, what do you say? ':
+        return True
+
     # Check if the question is a valid true or false question
     if type_of_question == 'true or false':
         if answer.split('.')[0].strip() not in ['TRUE', 'FALSE', 'True', 'False', 'true', 'false']:

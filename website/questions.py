@@ -15,7 +15,6 @@ def get_question():
 
     random_note = Note.query.filter_by(user_id=current_user.id).order_by(func.random()).first()
     if random_note:
-
         question, answer = create_random_question(random_note.data,
                                                   type_of_question=type_of_question,
                                                   difficulty=difficulty)
@@ -41,9 +40,11 @@ def get_question():
         print(f'question: {question}')
         print(f'answer: {answer}')
 
-        return jsonify({'question': question, 'answer': answer})
+        # question, answer = ['ciao', 'ok']
+        # Return the question, answer, and type of question as a JSON object
+        return jsonify({'question': question, 'answer': answer, 'type_of_question': type_of_question})
     else:
-        return jsonify({'question': "No notes available.", 'answer': ""})
+        return jsonify({'question': "No notes available.", 'answer': "", 'type_of_question': ""})
 
 
 @questions.route('/check_open_question', methods=['POST'])

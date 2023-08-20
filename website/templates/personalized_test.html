@@ -184,11 +184,12 @@ document.getElementById('createTestButton').addEventListener('click', function()
                             questionP.textContent=data.question;
                             containerDiv.appendChild(questionP);
 
-                            if (type_of_question=='open question') {
+                            if (data.type_of_question == 'open question') {
                                 // Create a textarea element for user input
-                                var textarea=document.createElement('textarea');
-                                textarea.rows=4;
-                                textarea.cols=50;
+                                var textarea = document.createElement('textarea');
+                                textarea.style.width = '100%';
+                                textarea.style.boxSizing = 'border-box';
+                                textarea.rows = 4;
                                 containerDiv.appendChild(textarea);
 
                                 // Create a submit button for user input
@@ -218,7 +219,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                             containerDiv.appendChild(answerP);
                                         });
                                 });
-                            } else if (type_of_question == 'true or false') {
+                            } else if (data.type_of_question == 'true or false') {
                                 // Create answer buttons
                                 var answers = [
                                     { label: 'True', color: '#007bff' },
@@ -229,22 +230,24 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                 // Add an event listener to the answer buttons
                                 var answerButtons = containerDiv.querySelectorAll('button');
                                 for (var i = 0; i < answerButtons.length; i++) {
-                                    answerButtons[i].addEventListener('click', function() {
-                                        var guess = this.textContent;
-                                        if (data.answer.startsWith(guess)) {
-                                            this.style.backgroundColor = '#28a745';
-                                            var answerP = document.createElement('p');
-                                            answerP.textContent = 'Correct! ' + data.answer;
-                                            containerDiv.appendChild(answerP);
-                                        } else {
-                                            this.style.backgroundColor = '#dc3545';
-                                            var answerP = document.createElement('p');
-                                            answerP.textContent = 'Incorrect. The correct answer is ' + data.answer + '.';
-                                            containerDiv.appendChild(answerP);
-                                        }
-                                    });
+                                    (function(containerDiv) {
+                                        answerButtons[i].addEventListener('click', function() {
+                                            var guess = this.textContent;
+                                            if (data.answer.startsWith(guess)) {
+                                                this.style.backgroundColor = '#28a745';
+                                                var answerP = document.createElement('p');
+                                                answerP.textContent = 'Correct! ' + data.answer;
+                                                containerDiv.appendChild(answerP);
+                                            } else {
+                                                this.style.backgroundColor = '#dc3545';
+                                                var answerP = document.createElement('p');
+                                                answerP.textContent = 'Incorrect. The correct answer is ' + data.answer + '.';
+                                                containerDiv.appendChild(answerP);
+                                            }
+                                        });
+                                    })(containerDiv);
                                 }
-                            } else if (type_of_question == 'closed question') {
+                            } else if (data.type_of_question == 'closed question') {
                                 // Create answer buttons
                                 var answers = [
                                     { label: 'A', color: '#007bff' },
