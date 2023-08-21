@@ -201,24 +201,26 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                 containerDiv.appendChild(submitButton);
 
                                 // Add an event listener to the submit button
-                                submitButton.addEventListener('click', function() {
-                                    var guess=textarea.value;
-                                    var question=data.question;
-                                    var answer=data.answer;
-                                    fetch('/check_open_question', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ guess: guess, question: question, answer: answer })
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            var answerP = document.createElement('p');
-                                            answerP.textContent = data.response;
-                                            containerDiv.appendChild(answerP);
-                                        });
-                                });
+                                submitButton.addEventListener('click', (function(containerDiv) {
+                                    return function() {
+                                        var guess = textarea.value;
+                                        var question = data.question;
+                                        var answer = data.answer;
+                                        fetch('/check_open_question', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ guess: guess, question: question, answer: answer })
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                var answerP = document.createElement('p');
+                                                answerP.textContent = data.response;
+                                                containerDiv.appendChild(answerP);
+                                            });
+                                    };
+                                })(containerDiv));
                             } else if (data.type_of_question == 'true or false') {
                                 // Create answer buttons
                                 var answers = [
@@ -260,20 +262,22 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                 // Add an event listener to the answer buttons
                                 var answerButtons = containerDiv.querySelectorAll('button');
                                 for (var i = 0; i < answerButtons.length; i++) {
-                                    answerButtons[i].addEventListener('click', function() {
-                                        var guess = this.textContent;
-                                        if (data.answer.startsWith(guess)) {
-                                            this.style.backgroundColor = '#28a745';
-                                            var answerP = document.createElement('p');
-                                            answerP.textContent = 'Correct! ' + data.answer;
-                                            containerDiv.appendChild(answerP);
-                                        } else {
-                                            this.style.backgroundColor = '#dc3545';
-                                            var answerP = document.createElement('p');
-                                            answerP.textContent = 'Incorrect. The correct answer is ' + data.answer + '.';
-                                            containerDiv.appendChild(answerP);
-                                        }
-                                    });
+                                    (function(containerDiv) {
+                                        answerButtons[i].addEventListener('click', function() {
+                                            var guess = this.textContent;
+                                            if (data.answer.startsWith(guess)) {
+                                                this.style.backgroundColor = '#28a745';
+                                                var answerP = document.createElement('p');
+                                                answerP.textContent = 'Correct! ' + data.answer;
+                                                containerDiv.appendChild(answerP);
+                                            } else {
+                                                this.style.backgroundColor = '#dc3545';
+                                                var answerP = document.createElement('p');
+                                                answerP.textContent = 'Incorrect. The correct answer is ' + data.answer + '.';
+                                                containerDiv.appendChild(answerP);
+                                            }
+                                        });
+                                    })(containerDiv);
                                 }
                             }
                         }

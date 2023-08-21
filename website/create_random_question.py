@@ -2,13 +2,14 @@ import openai
 import backoff
 import random
 import re
-from website.static.openai_key import openai_key
 import logging
+import os
 
 logging.basicConfig(level=logging.INFO)
 
 # Set your OpenAI API key
-openai.api_key = openai_key()
+openai_key = os.getenv('api_key')
+openai.api_key = openai_key
 
 
 def log_backoff(details):
@@ -22,10 +23,9 @@ def get_openai_response_with_backoff(prompt_question):
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[{
-                "role": "user",
-                "content": prompt_question
-            }],
+            messages=[{"role": "system", "content": "You are a helpful assistant who has to generate a question."},
+                      {"role": "user", "content": prompt_question}
+                      ],
             temperature=0.8,
             frequency_penalty=0.3,
             presence_penalty=0.8,
