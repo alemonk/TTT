@@ -51,7 +51,7 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
 
     # Generate ai response
     ai_output = get_openai_response_with_backoff(prompt_question)
-    print('AI response: ' + ai_output)
+    print(ai_output)
 
     # Split AI generated output into question and answer
     [question, answer] = split_string(ai_output)

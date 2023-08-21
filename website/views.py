@@ -7,21 +7,24 @@ import json
 views = Blueprint('views', __name__)
 
 
-@views.route('/', methods=['GET', 'POST'])
+@views.route('/notes', methods=['GET', 'POST'])
 @login_required
-def home():
+def create_note():
     if request.method == 'POST':
-        note = request.form.get('note')
+        title = request.form.get('title')
+        data = request.form.get('data')
 
-        if len(note) < 1:
+        if len(data) < 1:
             flash('Note is too short!', category='error')
         else:
-            new_note = Note(data=note, user_id=current_user.id)
+            new_note = Note(title=title, data=data, user_id=current_user.id)
             db.session.add(new_note)
             db.session.commit()
             flash('Note added!', category='success')
+            print('Note: ' + title + ' added!')
+            return jsonify({'title': title, 'data': data, 'user_id': current_user.id})
 
-    return render_template("home.html", user=current_user)
+    return render_template("notes.html", user=current_user)
 
 
 @views.route('/delete-note', methods=['POST'])

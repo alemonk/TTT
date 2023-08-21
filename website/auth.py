@@ -19,13 +19,13 @@ def login():
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
-                return redirect((url_for('views.home')))
+                return redirect((url_for('views.create_note')))
             else:
                 flash('Incorrect password.', category='error')
         else:
             flash('Email does not exist.', category='error')
 
-    return render_template("login.html", user=current_user)
+    return render_template("index.html", user=current_user)
 
 
 @auth.route('/logout')
@@ -39,7 +39,7 @@ def logout():
 def sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
-        first_name = request.form.get('firstName')
+        username = request.form.get('username')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
@@ -49,7 +49,7 @@ def sign_up():
             flash('Email already exists.', category='error')
         elif len(email) < 4:
             flash('Email must be greater than 4 characters.', category='error')
-        elif len(first_name) < 2:
+        elif len(username) < 2:
             flash('First name must be greater than 1 character.', category='error')
         elif password1 != password2:
             flash('Passwords don\'t match.', category='error')
@@ -58,7 +58,7 @@ def sign_up():
         else:
             new_user = User()
             new_user.email = email
-            new_user.first_name = first_name
+            new_user.username = username
             new_user.password = generate_password_hash(password1, method='scrypt')
 
             db.session.add(new_user)
@@ -66,7 +66,7 @@ def sign_up():
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
 
-            return redirect((url_for('views.home')))
+            return redirect((url_for('views.create_note')))
 
     return render_template("sign_up.html", user=current_user)
 

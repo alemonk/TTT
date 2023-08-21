@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Personalized Test</title>
+</head>
+<body>
+    {% extends "base.html" %}
+    {% block title %}Home{% endblock %}
+    {% block content %}
+
+    <h3 align="center">Notes</h3>
+    <br />
+
+    <div id="drop-area">
+      <p>Drag and drop files here</p>
+    </div>
+
+    <br />
+
+    <ul class="list-group list-group-flush" id="notes">
+        {% for note in user.notes %}
+        <li class="list-group-item">
+            <div class="note-title" onclick="toggleNoteContent(this)">
+                {{ note.title }}
+            </div>
+            <div class="note-content" style="display: none;">
+                {{ note.data }}
+            </div>
+            <button type="button" class="close" onclick="deleteNote({{ note.id }})">
+                <span aria-hidden="true">×</span>
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+
+<script>
+const dropArea = document.querySelector('#drop-area');
+
+dropArea.addEventListener('dragover', (event) => {
+  event.preventDefault();
+});
+
+window.addEventListener("dragover",function(e){
+  e = e || event;
+  e.preventDefault();
+},false);
+window.addEventListener("drop",function(e){
+  e = e || event;
+  e.preventDefault();
+},false);
+
+dropArea.addEventListener('drop', (event) => {
+  event.preventDefault();
+  const files = event.dataTransfer.files;
+  handleFiles(files);
+});
+
+function handleFiles(files) {
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = () => {
+      const title = file.name;
+      const data = reader.result;
+      createNote(title, data);
+    };
+  }
+}
+
+function createNote(title, data) {
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('data', data);
+
+  fetch('/notes', {
+    method: 'POST',
+    body: formData
+  }).then(response => response.json())
+    .then(note => {
+      const noteList = document.querySelector('#notes');
+      const li = document.createElement('li');
+      li.className = 'list-group-item';
+      li.innerHTML = `
+        <div class="note-title" onclick="toggleNoteContent(this)">
+          ${note.title}
+        </div>
+        <div class="note-content" style="display: none;">
+          ${note.data}
+        </div>
+        <button type="button" class="close" onclick="deleteNote(${note.id})">
+          <span aria-hidden="true">×</span>
+        </button>
+      `;
+      noteList.appendChild(li);
+    });
+}
+
+
+function toggleNoteContent(element) {
+  const noteContent = element.nextElementSibling;
+  if (noteContent.style.display === 'none') {
+    noteContent.style.display = 'block';
+  } else {
+    noteContent.style.display = 'none';
+  }
+}
+</script>
+
+{% endblock %}
+</body>
+</html>
