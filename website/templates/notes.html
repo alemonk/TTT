@@ -1,40 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Personalized Test</title>
-</head>
-<body>
-    {% extends "base.html" %}
-    {% block title %}Home{% endblock %}
-    {% block content %}
+{% extends "base.html" %}
+{% block content %}
 
-    <h3 align="center">Notes</h3>
-    <br />
+<h3 align="center">Notes</h3>
+<br />
 
-    <div id="drop-area">
-      <p>Drag and drop files here</p>
-    </div>
+<div class="drop-area">
+  <p>Drag and drop files here</p>
+</div>
 
-    <br />
+<br />
 
-    <ul class="list-group list-group-flush" id="notes">
-        {% for note in user.notes %}
-        <li class="list-group-item">
-            <div class="note-title" onclick="toggleNoteContent(this)">
-                {{ note.title }}
-            </div>
-            <div class="note-content" style="display: none;">
-                {{ note.data }}
-            </div>
-            <button type="button" class="close" onclick="deleteNote({{ note.id }})">
-                <span aria-hidden="true">×</span>
-            </button>
-        </li>
-        {% endfor %}
-    </ul>
+<ul class="list-group list-group-flush" id="notes">
+    {% for note in user.notes %}
+    <li class="list-group-item">
+        <div class="note-title" onclick="toggleNoteContent(this, {{ note.id }})">
+            {{ note.title }}
+        </div>
+        <div class="note-content" style="display: none;">
+        </div>
+        <button type="button" class="close" onclick="deleteNote({{ note.id }})">
+            <span aria-hidden="true">×</span>
+        </button>
+    </li>
+    {% endfor %}
+</ul>
 
 <script>
-const dropArea = document.querySelector('#drop-area');
+    const dropArea = document.querySelector('.drop-area');
 
 dropArea.addEventListener('dragover', (event) => {
   event.preventDefault();
@@ -81,11 +73,10 @@ function createNote(title, data) {
       const li = document.createElement('li');
       li.className = 'list-group-item';
       li.innerHTML = `
-        <div class="note-title" onclick="toggleNoteContent(this)">
+        <div class="note-title" onclick="toggleNoteContent(this, ${note.id})">
           ${note.title}
         </div>
         <div class="note-content" style="display: none;">
-          ${note.data}
         </div>
         <button type="button" class="close" onclick="deleteNote(${note.id})">
           <span aria-hidden="true">×</span>
@@ -95,17 +86,40 @@ function createNote(title, data) {
     });
 }
 
-
-function toggleNoteContent(element) {
+function toggleNoteContent(element, noteId) {
   const noteContent = element.nextElementSibling;
   if (noteContent.style.display === 'none') {
-    noteContent.style.display = 'block';
+    const formData = new FormData();
+    formData.append('note_id', noteId);
+    fetch('/note-content', {
+      method: 'POST',
+      body: formData
+    })
+      .then(response => response.text())
+      .then(data => {
+        noteContent.textContent = data;
+        noteContent.style.display = 'block';
+      });
   } else {
     noteContent.style.display = 'none';
   }
 }
+
+function deleteNote(noteId) {
+  fetch('/delete-note', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ noteId })
+  }).then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      }
+    });
+}
+
 </script>
 
 {% endblock %}
-</body>
-</html>
