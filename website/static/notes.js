@@ -1,0 +1,83 @@
+const dropArea = document.querySelector('.drop-area');
+
+dropArea.addEventListener('dragover', (event) => {
+  event.preventDefault();
+});
+
+
+window.addEventListener("dragover",function(e){
+  e = e || event;
+  e.preventDefault();
+},false);
+window.addEventListener("drop",function(e){
+  e = e || event;
+  e.preventDefault();
+},false);
+
+dropArea.addEventListener('drop', (event) => {
+  event.preventDefault();
+  const files = event.dataTransfer.files;
+  handleFiles(files);
+});
+
+
+function handleFiles(files) {
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onload = () => {
+      const title = file.name;
+      const data = new Uint8Array(reader.result);
+      createNote(title, data);
+    };
+  }
+}
+
+
+function createNote(title, data) {
+  const blob = new Blob([data], { type: 'application/octet-stream' });
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('data', blob);
+
+  fetch('/notes', {
+    method: 'POST',
+    body: formData
+  }).then(response => response.json())
+}
+
+
+function toggleNoteContent(element, noteId) {
+  const noteContent = element.nextElementSibling;
+  if (noteContent.style.display === 'none') {
+    const formData = new FormData();
+    formData.append('note_id', noteId);
+    fetch('/note-content', {
+      method: 'POST',
+      body: formData
+    })
+      .then(response => response.text())
+      .then(data => {
+        noteContent.textContent = data;
+        noteContent.style.display = 'block';
+      });
+  } else {
+    noteContent.style.display = 'none';
+  }
+}
+
+
+function deleteNote(noteId) {
+  fetch('/delete-note', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ noteId })
+  }).then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      }
+    });
+}

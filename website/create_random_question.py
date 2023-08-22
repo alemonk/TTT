@@ -16,7 +16,7 @@ def log_backoff(details):
     logging.info(f"Backing off {details['wait']} seconds after {details['tries']} tries")
 
 
-@backoff.on_exception(backoff.constant, openai.error.RateLimitError, max_tries=10, on_backoff=log_backoff, interval=5)
+@backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_tries=20, on_backoff=log_backoff, base=10)
 def get_openai_response_with_backoff(prompt_question):
     print('request to openai with backoff')
 
@@ -39,15 +39,19 @@ def get_openai_response_with_backoff(prompt_question):
 
 def create_random_question(note, type_of_question='true or false', difficulty='medium'):
     # Set up the prompt for openAI API
-    truncated_note = select_random_note_portion(note, max_note_length=200)
+    truncated_note = select_random_note_portion(note, max_note_length=500)
 
     prompt_question = "Kind of question: " + type_of_question + \
                       "\nDifficulty: " + difficulty + \
                       "\nAsk one random question using a few sentences from the following:\n" + truncated_note + \
-                      "\n\nThe output must be in the format 'QUESTION: [...] ? CORRECT ANSWER: [...] .' " + \
-                      "\n\nNote 1: In the case of a 'closed question' there must be A, B, C, or D as possible answers." + \
-                      "\nNote 2: In the case of a 'true or false' question, the answer is TRUE/FALSE regardless of the language."
-                      # "\nNote 3: The language MUST be the same as the note, which is not necessarily English."
+                      "\n\nNote 1: The output must be in the format 'QUESTION: [...] ? CORRECT ANSWER: [...] .' " + \
+                      "\nNote 2: In the CORRECT ANSWER, explain also why the answer is correct." + \
+                      "\nNote 3: In the case of a 'closed question' there must be A, B, C, or D as possible answers." + \
+                      "\nNote 4: In the case of a 'true or false' question, the answer is TRUE/FALSE regardless of the language." + \
+                      "\nNote 5: The language MUST be the same as the note, which is not necessarily English." + \
+                      "\nNote 6: Give equal chance to the possible answers."
+
+    print('Prompt question: ' + prompt_question)
 
     # Generate ai response
     ai_output = get_openai_response_with_backoff(prompt_question)
@@ -70,7 +74,7 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
     return [question, answer]
 
 
-def select_random_note_portion(note, max_note_length=200):
+def select_random_note_portion(note, max_note_length):
     # Truncate note if it's longer than max_note_length
     if len(note) > max_note_length:
         start_idx = random.randint(0, len(note) - max_note_length)

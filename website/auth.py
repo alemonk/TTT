@@ -10,6 +10,7 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    print('Login route called')
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -25,18 +26,20 @@ def login():
         else:
             flash('Email does not exist.', category='error')
 
-    return render_template("index.html", user=current_user)
+    return render_template("login.html", user=current_user)
 
 
 @auth.route('/logout')
 @login_required
 def logout():
+    print('Logout route called')
     logout_user()
     return redirect((url_for('auth.login')))
 
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
+    print('Sign up route called')
     if request.method == 'POST':
         email = request.form.get('email')
         username = request.form.get('username')
@@ -71,13 +74,8 @@ def sign_up():
     return render_template("sign_up.html", user=current_user)
 
 
-@auth.route('/quiz_me')
-@login_required
-def quiz_me():
-    return render_template("quiz_me.html", user=current_user)
+@auth.route('/', methods=['GET'])
+def index():
+    print('Index (home screen) route called')
+    return render_template('index.html', user=current_user)
 
-
-@auth.route('/personalized_test')
-@login_required
-def personalized_test():
-    return render_template("personalized_test.html", user=current_user)

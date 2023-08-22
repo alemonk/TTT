@@ -14,7 +14,7 @@ def log_backoff(details):
     logging.info(f"Backing off {details['wait']} seconds after {details['tries']} tries")
 
 
-@backoff.on_exception(backoff.constant, openai.error.RateLimitError, max_tries=10, on_backoff=log_backoff, interval=5)
+@backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_tries=10, on_backoff=log_backoff, base=10)
 def get_openai_response_with_backoff(prompt):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
