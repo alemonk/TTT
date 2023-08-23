@@ -41,7 +41,7 @@ def get_openai_response_with_backoff(prompt_question, system_content):
 def create_random_question(note, type_of_question='true or false', difficulty='medium'):
     # Set up the prompt for openAI API
     truncated_note = select_random_note_portion(note, max_note_length=750)
-    prompt_question = "Ask one random question using a few sentences from the following:\n" + truncated_note
+    prompt_question = "Ask one random question using a few sentences from the following: " + truncated_note
 
     system_content = 'You are a helpful assistant who has to generate a question. ' + \
                      'You are given a random portion of a book so, when you generate a question, avoid referring to its figures, ' + \

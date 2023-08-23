@@ -187,7 +187,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                     var guess = textarea.value;
                                     var question = data.question;
                                     var answer = data.answer;
-                                    fetch('/check_open_question', {
+                                    fetch('/open_question_check_answer', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'
