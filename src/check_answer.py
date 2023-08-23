@@ -26,7 +26,7 @@ def get_openai_response_with_backoff(prompt):
     return response
 
 
-def open_question_check(guess, question, answer):
+def check_answer(guess, question, answer):
     # Construct the prompt
     prompt = f"""
     Question: {question}
@@ -41,5 +41,5 @@ def open_question_check(guess, question, answer):
     # Generate AI response
     response = get_openai_response_with_backoff(prompt)
     ai_output = response['choices'][0]['message']['content'].strip()
-    print('AI response: ' + ai_output)
+    print('\n\nAI response: ' + ai_output)
     return ai_output

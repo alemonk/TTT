@@ -1,20 +1,6 @@
-"""
-README
-
-This is a Flask application that allows users to create, view, and delete notes. Users can upload notes in the form of PDF or text files. The uploaded file data is stored in a `Note` object, which has a `content` attribute that stores the extracted text from the file. The application also provides routes for viewing and deleting notes.
-
-The application uses Flask blueprints to organize its views and routes. The `views` blueprint defines routes for creating, viewing, and deleting notes, as well as routes for other features such as a quiz and a personalized test.
-
-The application uses the Flask-Login extension to handle user authentication and session management. Users must be logged in to access the routes defined in the `views` blueprint.
-
-The application uses SQLAlchemy as its ORM and defines two models: `Note` and `User`. The `Note` model represents a user's note, while the `User` model represents a user account.
-
-The application also uses the PyPDF2 library to extract text from PDF files.
-"""
-
 import io
 import PyPDF2
-from flask import Blueprint, render_template, request, flash, jsonify
+from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
 from .models import Note
 from . import db
@@ -27,7 +13,7 @@ views = Blueprint('views', __name__)
 @views.route('/notes', methods=['GET', 'POST'])
 @login_required
 def create_note():
-    print('Notes route called')
+    print('\n\nNotes route called')
     if request.method == 'POST':
         # Get note title and file data from form
         title = request.form.get('title')
@@ -41,9 +27,7 @@ def create_note():
         db.session.add(new_note)
         db.session.commit()
 
-        # Flash success message and return JSON response
-        flash('Note added!', category='success')
-        print('Note: ' + title + ' added!')
+        print('\n\nNote: ' + title + ' added!')
         return jsonify({'id': new_note.id, 'title': title})
 
     # Render notes template on GET request
@@ -121,7 +105,7 @@ def delete_note():
 @views.route('/quiz_me')
 @login_required
 def quiz_me():
-    print('QuizMe route called')
+    print('\n\nQuizMe route called')
     return render_template("quiz_me.html", user=current_user)
 
 
@@ -129,5 +113,5 @@ def quiz_me():
 @views.route('/personalized_test')
 @login_required
 def personalized_test():
-    print('Personalized test route called')
+    print('\n\nPersonalized test route called')
     return render_template("personalized_test.html", user=current_user)

@@ -1,5 +1,5 @@
 import os
-from website import create_app
+from src import create_app
 from dotenv import load_dotenv
 
 

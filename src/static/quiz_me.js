@@ -1,40 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>QuizMe</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
-<body>
-    {% extends "base.html" %}
-    {% block title %}QuizMe{% endblock %}
-    {% block content %}
-
-    <br />
-    <h3 align="center">QuizMe</h3>
-    <div align="center">
-        <input type="range" min="1" max="3" value="2" class="slider" id="difficultySlider">
-        <p>Difficulty: <span id="difficulty"></span></p>
-    </div>
-
-    <br />
-    <div align="center">
-        <!-- Question buttons -->
-        <button type="button" class="btn btn-primary" id="open-question-button">
-            Open Question
-        </button>
-        <button type="button" class="btn btn-primary" id="true-false-button">
-            True or False
-        </button>
-        <button type="button" class="btn btn-primary" id="closed-question-button">
-            Closed Question
-        </button>
-    </div>
-    <!-- Output divs -->
-    <div id="output" style="margin-top: 10px; text-align: left;"></div>
-    <div id="answer-buttons" style="margin-top: 10px;"></div>
-    <div id="answer-output" style="margin-top: 10px; text-align: left;"></div>
-
-<script>
 let slider = document.getElementById("difficultySlider");
 let output = document.getElementById("difficulty");
 output.innerHTML = slider.value == 1 ? "Easy" : (slider.value == 2 ? "Medium" : "Hard");
@@ -110,7 +73,7 @@ document.getElementById('open-question-button').addEventListener('click', functi
             submitButton.addEventListener('click', function() {
                 var guess = textarea.value;
                 var question = data.question;
-                fetch('/check_open_question', {
+                fetch('/open_question_check_answer', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -157,13 +120,24 @@ document.getElementById('true-false-button').addEventListener('click', function(
             for (var i = 0; i < answerButtons.length; i++) {
                 answerButtons[i].addEventListener('click', function() {
                     var guess = this.textContent;
-                    if (answer.startsWith(guess)) {
-                        this.style.backgroundColor = '#28a745';
-                        document.getElementById('answer-output').textContent = 'Correct! ' + answer;
-                    } else {
-                        this.style.backgroundColor = '#dc3545';
-                        document.getElementById('answer-output').textContent = 'Incorrect. The correct answer is ' + answer + '.';
-                    }
+                    var question = data.question;
+                    fetch('/true_or_false_check_answer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ guess: guess, question: question, answer: answer })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            var answerOutputDiv = document.getElementById('answer-output');
+                            answerOutputDiv.textContent = data.response;
+                            if (data.response.startsWith("Correct")) {
+                                this.style.backgroundColor = '#28a745';
+                            } else {
+                                this.style.backgroundColor = '#dc3545';
+                            }
+                        });
                 });
             }
         });
@@ -202,19 +176,25 @@ document.getElementById('closed-question-button').addEventListener('click', func
             for (var i = 0; i < answerButtons.length; i++) {
                 answerButtons[i].addEventListener('click', function() {
                     var guess = this.textContent;
-                    if (answer.startsWith(guess)) {
-                        this.style.backgroundColor = '#28a745';
-                        document.getElementById('answer-output').textContent = 'Correct! ' + answer;
-                    } else {
-                        this.style.backgroundColor = '#dc3545';
-                        document.getElementById('answer-output').textContent = 'Incorrect. The correct answer is ' + answer + '.';
-                    }
+                    var question = data.question;
+                    fetch('/closed_question_check_answer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ guess: guess, question: question, answer: answer })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            var answerOutputDiv = document.getElementById('answer-output');
+                            answerOutputDiv.textContent = data.response;
+                            if (data.response.startsWith("Correct")) {
+                                this.style.backgroundColor = '#28a745';
+                            } else {
+                                this.style.backgroundColor = '#dc3545';
+                            }
+                        });
                 });
             }
         });
 });
-
-</script>
-{% endblock %}
-</body>
-</html>

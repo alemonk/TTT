@@ -16,20 +16,21 @@ def log_backoff(details):
     logging.info(f"Backing off {details['wait']} seconds after {details['tries']} tries")
 
 
-@backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_tries=20, on_backoff=log_backoff, base=10)
-def get_openai_response_with_backoff(prompt_question):
-    print('request to openai with backoff')
+@backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_tries=60, on_backoff=log_backoff, base=10)
+def get_openai_response_with_backoff(prompt_question, system_content):
+    print('\n\nrequest to openai with backoff')
 
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "system", "content": "You are a helpful assistant who has to generate a question."},
+            messages=[{"role": "system", "content": system_content},
                       {"role": "user", "content": prompt_question}
                       ],
             temperature=0.8,
             frequency_penalty=0.3,
             presence_penalty=0.8,
         )
+        print('\n\nresponse: ' + str(response))
         response = response['choices'][0]['message']['content']
         return response
     except openai.error.RateLimitError as e:
@@ -39,23 +40,28 @@ def get_openai_response_with_backoff(prompt_question):
 
 def create_random_question(note, type_of_question='true or false', difficulty='medium'):
     # Set up the prompt for openAI API
-    truncated_note = select_random_note_portion(note, max_note_length=500)
+    truncated_note = select_random_note_portion(note, max_note_length=750)
+    prompt_question = "Ask one random question using a few sentences from the following:\n" + truncated_note
 
-    prompt_question = "Kind of question: " + type_of_question + \
-                      "\nDifficulty: " + difficulty + \
-                      "\nAsk one random question using a few sentences from the following:\n" + truncated_note + \
-                      "\n\nNote 1: The output must be in the format 'QUESTION: [...] ? CORRECT ANSWER: [...] .' " + \
-                      "\nNote 2: In the CORRECT ANSWER, explain also why the answer is correct." + \
-                      "\nNote 3: In the case of a 'closed question' there must be A, B, C, or D as possible answers." + \
-                      "\nNote 4: In the case of a 'true or false' question, the answer is TRUE/FALSE regardless of the language." + \
-                      "\nNote 5: The language MUST be the same as the note, which is not necessarily English." + \
-                      "\nNote 6: Give equal chance to the possible answers."
+    system_content = 'You are a helpful assistant who has to generate a question. ' + \
+                     'You are given a random portion of a book so, when you generate a question, avoid referring to its figures, ' + \
+                     'to its chapters, its lines or pages as if the user knew all the book by heart (see Remark 7). ' + \
+                     'The question should be more focused on the understanding of the note rather than its grammar. ' + \
+                     'The difficulty of the question is: ' + difficulty + \
+                     '. Kind of question: ' + type_of_question + '.' + \
+                     "\nRemark 1: The output must be in the format 'QUESTION: [...] ? CORRECT ANSWER: [...] .' " + \
+                     "\nRemark 2: In the CORRECT ANSWER, explain also why the answer is correct." + \
+                     "\nRemark 3: In the case of a 'closed question' there must be A, B, C, or D as possible answers." + \
+                     "\nRemark 4: In the case of a 'true or false' question, the answer is TRUE/FALSE regardless of the language." + \
+                     "\nRemark 5: The language MUST be the same as the note, which is not necessarily English." + \
+                     "\nRemark 6: Give equal chance to the possible answers." + \
+                     "\nRemark 7: If you believe that you don't have enough information for generating a good quality question, output 'No enough info'"
 
-    print('Prompt question: ' + prompt_question)
+    print('\n\nPrompt question: ' + prompt_question)
 
     # Generate ai response
-    ai_output = get_openai_response_with_backoff(prompt_question)
-    print(ai_output)
+    ai_output = get_openai_response_with_backoff(prompt_question, system_content)
+    print('\n\nai_output: ' + ai_output)
 
     # Split AI generated output into question and answer
     [question, answer] = split_string(ai_output)
@@ -65,8 +71,8 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
 
     # If generated question is not valid, generate a new one
     while not is_valid:
-        ai_output = get_openai_response_with_backoff(prompt_question)
-        print('AI response: ' + ai_output)
+        ai_output = get_openai_response_with_backoff(prompt_question, system_content)
+        print('\n\nAI response: ' + ai_output)
         [question, answer] = split_string(ai_output)
         is_valid = check_question_validity(question, answer, type_of_question)
 
@@ -75,11 +81,13 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
 
 
 def select_random_note_portion(note, max_note_length):
+    print('Note length: ' + str(len(note)))
     # Truncate note if it's longer than max_note_length
     if len(note) > max_note_length:
         start_idx = random.randint(0, len(note) - max_note_length)
         truncated_note = note[start_idx:start_idx + max_note_length]
     else:
+        # TODO If the note is very short, then consider only a small portion
         truncated_note = note
     return truncated_note
 
@@ -89,21 +97,24 @@ def check_question_validity(question: str, answer: str, type_of_question: str) -
     if question == 'A LOT of people are using this app, what do you say? ':
         return True
 
+    if question == 'No enough info':
+        return False
+
     # Check if the question is a valid true or false question
     if type_of_question == 'true or false':
         if answer.split('.')[0].strip() not in ['TRUE', 'FALSE', 'True', 'False', 'true', 'false']:
-            print('Question not valid. Regenerate...')
+            print('\n\nQuestion not valid. Regenerate...')
             return False
 
     # Check if the question is a valid-closed question
     if type_of_question == 'closed question':
         options = re.findall(r'\b[A-D]\)', question)
         if len(options) < 2:
-            print('Question not valid. Regenerate...')
+            print('\n\nQuestion not valid. Regenerate...')
             return False
 
     # If all checks passed, return True
-    print('Valid question!')
+    print('\n\nValid question!')
     return True
 
 
@@ -113,5 +124,5 @@ def split_string(input_string: str) -> list:
         answer = re.split(r'CORRECT ANSWER:\s*', input_string)[1]
         return [question, answer]
     except Exception as e:
-        print(f"An error occurred while splitting the AI output: {e}")
+        print(f"\n\nAn error occurred while splitting the AI output: {e}")
         return [input_string, ""]
