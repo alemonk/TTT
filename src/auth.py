@@ -78,4 +78,3 @@ def sign_up():
 def index():
     print('Index (home screen) route called')
     return render_template("index.html", user=current_user)
-

@@ -16,26 +16,23 @@ def log_backoff(details):
     logging.info(f"Backing off {details['wait']} seconds after {details['tries']} tries")
 
 
-@backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_tries=60, on_backoff=log_backoff, base=10)
+@backoff.on_exception(backoff.constant, openai.error.RateLimitError, max_tries=10, on_backoff=log_backoff, interval=10)
 def get_openai_response_with_backoff(prompt_question, system_content):
     print('\n\nrequest to openai with backoff')
 
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "system", "content": system_content},
-                      {"role": "user", "content": prompt_question}
-                      ],
-            temperature=0.8,
-            frequency_penalty=0.3,
-            presence_penalty=0.8,
-        )
-        print('\n\nresponse: ' + str(response))
-        response = response['choices'][0]['message']['content']
-        return response
-    except openai.error.RateLimitError as e:
-        return 'QUESTION: A LOT of people are using this app, what do you say? ' + \
-               'CORRECT ANSWER: True'
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "system", "content": system_content},
+                  {"role": "user", "content": prompt_question}
+                  ],
+        temperature=0.8,
+        frequency_penalty=0.3,
+        presence_penalty=0.8,
+    )
+    print('\n\nresponse: ' + str(response))
+    response = response['choices'][0]['message']['content']
+
+    return response
 
 
 def create_random_question(note, type_of_question='true or false', difficulty='medium'):
@@ -71,6 +68,8 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
 
     # If generated question is not valid, generate a new one
     while not is_valid:
+        truncated_note = select_random_note_portion(note, max_note_length=750)
+        prompt_question = "Ask one random question using a few sentences from the following: " + truncated_note
         ai_output = get_openai_response_with_backoff(prompt_question, system_content)
         print('\n\nAI response: ' + ai_output)
         [question, answer] = split_string(ai_output)

@@ -3,8 +3,13 @@
     <link
         rel="stylesheet"
         type="text/css"
-        href="{{ url_for('static', filename='notes.css') }}"
+        href="{{ url_for('static', filename='css/notes.css') }}"
     >
+
+    <script defer
+        type="text/javascript"
+        src="{{ url_for('static', filename='js/notes.js') }}"
+    ></script>
 <head>
 </head>
 <body>
@@ -26,20 +31,15 @@
     <li class="list-group-item">
         <div class="note-title" onclick="toggleNoteContent(this, {{ note.id }})">
             {{ note.title }}
+
         </div>
         <div class="note-content" style="display: none;">
         </div>
-        <button type="button" class="close" onclick="deleteNote({{ note.id }})">
-            <span aria-hidden="true">×</span>
+        <button type="button" class="btn-close" aria-label="Close" onclick="deleteNote({{ note.id }})">
         </button>
     </li>
     {% endfor %}
 </ul>
-
-<script
-    type="text/javascript"
-    src="{{ url_for('static', filename='notes.js') }}"
-></script>
 
 {% endblock %}
 

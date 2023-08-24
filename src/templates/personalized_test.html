@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html>
+    <script defer
+        type="text/javascript"
+        src="{{ url_for('static', filename='js/personalized_test.js') }}"
+    ></script>
 <head>
     <title>Personalized Test</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -49,11 +53,6 @@
     <!-- Output divs -->
     <br />
     <div id="output" style="margin-top: 10px; text-align: left;"></div>
-
-    <script
-    type="text/javascript"
-    src="{{ url_for('static', filename='personalized_test.js') }}"
-    ></script>
 
 {% endblock %}
 </body>
