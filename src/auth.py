@@ -8,7 +8,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 auth = Blueprint('auth', __name__)
 
 
-@auth.route('/login', methods=['GET', 'POST'])
+@auth.route('/', methods=['GET', 'POST'])
 def login():
     print('\n\nLogin route called')
     if request.method == 'POST':
@@ -74,7 +74,7 @@ def sign_up():
     return render_template("sign_up.html", user=current_user)
 
 
-@auth.route('/', methods=['GET'])
-def index():
-    print('Index (home screen) route called')
-    return render_template("index.html", user=current_user)
+@auth.route('/home', methods=['GET'])
+def home():
+    print('home (home screen) route called')
+    return render_template("home.html", user=current_user)
