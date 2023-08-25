@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
+    <script defer
+        type="text/javascript"
+        src="{{ url_for('static', filename='js/quiz_me.js') }}"
+    ></script>
 <head>
     <title>QuizMe</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
     {% extends "base.html" %}
@@ -33,11 +36,6 @@
     <div id="output" style="margin-top: 10px; text-align: left;"></div>
     <div id="answer-buttons" style="margin-top: 10px;"></div>
     <div id="answer-output" style="margin-top: 10px; text-align: left;"></div>
-
-<script
-    type="text/javascript"
-    src="{{ url_for('static', filename='quiz_me.js') }}"
-></script>
 
 {% endblock %}
 </body>
