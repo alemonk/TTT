@@ -1,11 +1,3 @@
-let difficultySlider = document.getElementById("difficultySlider");
-let difficultyOutput = document.getElementById("difficulty");
-difficultyOutput.innerHTML = difficultySlider.value == 1 ? "Easy" : (difficultySlider.value == 2 ? "Medium" : "Hard");
-
-difficultySlider.oninput = function() {
-    difficultyOutput.innerHTML = this.value == 1 ? "Easy" : (this.value == 2 ? "Medium" : "Hard");
-}
-
 let numOpenQuestionsSlider = document.getElementById("numOpenQuestionsSlider");
 let numOpenQuestionsOutput = document.getElementById("numOpenQuestions");
 numOpenQuestionsOutput.innerHTML = numOpenQuestionsSlider.value;
@@ -40,7 +32,7 @@ function createAnswerButtons(answers, containerDiv) {
     for (var i = 0; i < answers.length; i++) {
         var answerButton = document.createElement('button');
         answerButton.type = 'button';
-        answerButton.className = 'btn btn-primary';
+        answerButton.className = 'btn btn-primary my-2';
         answerButton.style.marginRight = '5px';
         answerButton.textContent = answers[i].label;
         answerButton.style.backgroundColor = answers[i].color;
@@ -52,7 +44,6 @@ function createAnswerButtons(answers, containerDiv) {
 document.getElementById('createTestButton').addEventListener('click', function() {
     clearOutput();
 
-    let difficulty = document.getElementById("difficulty").innerHTML;
     let numOpenQuestions = parseInt(document.getElementById("numOpenQuestions").innerHTML);
     let numTrueFalseQuestions = parseInt(document.getElementById("numTrueFalseQuestions").innerHTML);
     let numClosedQuestions = parseInt(document.getElementById("numClosedQuestions").innerHTML);
@@ -68,7 +59,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
     // Create a progress bar element
     var progressBar = document.createElement('div');
-    progressBar.className = 'progress-bar';
+    progressBar.className = 'progressbar';
     progressBar.role = 'progressbar';
     progressBar.style.width = '0%';
 
@@ -131,7 +122,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ difficulty: item.difficulty, type_of_question: item.type_of_question })
+            body: JSON.stringify({ type_of_question: item.type_of_question })
         })
             .then(response => response.json())
             .then(data => {
@@ -152,12 +143,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
                         // Create a container div element for the question and answer
                         var containerDiv=document.createElement('div');
-                        containerDiv.style.display='block';
-                        containerDiv.style.borderStyle='solid';
-                        containerDiv.style.borderWidth='1px';
-                        containerDiv.style.borderColor='#007bff';
-                        containerDiv.style.padding='10px';
-                        containerDiv.style.marginBottom='10px';
+                        containerDiv.className='p-5 bg-primary-subtle rounded-5 my-3';
                         outputDiv.appendChild(containerDiv);
 
                         // Create a p element for the question
@@ -226,7 +212,15 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                         })
                                             .then(response => response.json())
                                             .then(data => {
+                                                // Clear the previous answer
+                                                var previousAnswerP = containerDiv.querySelector('.answer');
+                                                if (previousAnswerP) {
+                                                    previousAnswerP.remove();
+                                                }
+
+                                                // Display the new answer
                                                 var answerP = document.createElement('p');
+                                                answerP.className = 'answer';
                                                 answerP.textContent = data.response;
                                                 containerDiv.appendChild(answerP);
                                                 if (data.response.startsWith("Correct")) {
@@ -238,6 +232,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                     });
                                 })(containerDiv);
                             }
+
                         } else if (data.type_of_question == 'closed question') {
                             // Create answer buttons
                             var answers = [
@@ -264,7 +259,15 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                         })
                                             .then(response => response.json())
                                             .then(data => {
+                                                // Clear the previous answer
+                                                var previousAnswerP = containerDiv.querySelector('.answer');
+                                                if (previousAnswerP) {
+                                                    previousAnswerP.remove();
+                                                }
+
+                                                // Display the new answer
                                                 var answerP = document.createElement('p');
+                                                answerP.className = 'answer';
                                                 answerP.textContent = data.response;
                                                 containerDiv.appendChild(answerP);
                                                 if (data.response.startsWith("Correct")) {
@@ -293,11 +296,10 @@ document.getElementById('createTestButton').addEventListener('click', function()
         for (let j=0; j < numQuestionTypesPerType[i]; j++) {
 
             // Print to console for debugging
-            console.log('difficulty: ', difficulty)
             console.log('type_of_question: ', type_of_question)
 
             // Enqueue the request data
-            queue.enqueue({ difficulty: difficulty, type_of_question: type_of_question });
+            queue.enqueue({ type_of_question: type_of_question });
         }
     }
 

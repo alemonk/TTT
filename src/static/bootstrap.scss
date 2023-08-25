@@ -1,3 +1,11 @@
-$primary: #FF0000;
+$primary: #29A6FF;
+$secondary: #ffc107;
 
 @import "node_modules/bootstrap/scss/bootstrap";
+
+/* to apply changes, run the following lines:
+
+cd PycharmProjects\TTT\src\static
+sass bootstrap.scss bootstrap.css
+
+*/

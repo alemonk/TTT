@@ -10,14 +10,12 @@ questions = Blueprint('questions', __name__)
 
 @questions.route('/question', methods=['POST'])
 def get_question():
-    difficulty = request.json['difficulty']
     type_of_question = request.json['type_of_question']
 
     random_note = Note.query.filter_by(user_id=current_user.id).order_by(func.random()).first()
     if random_note:
         question, answer = create_random_question(random_note.content,
-                                                  type_of_question=type_of_question,
-                                                  difficulty=difficulty)
+                                                  type_of_question=type_of_question)
 
         answer = normalize_answer(type_of_question, answer)
 

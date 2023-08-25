@@ -35,7 +35,7 @@ def get_openai_response_with_backoff(prompt_question, system_content):
     return response
 
 
-def create_random_question(note, type_of_question='true or false', difficulty='medium'):
+def create_random_question(note, type_of_question='true or false'):
     # Set up the prompt for openAI API
     truncated_note = select_random_note_portion(note, max_note_length=750)
     prompt_question = "Ask one random question using a few sentences from the following: " + truncated_note
@@ -44,8 +44,7 @@ def create_random_question(note, type_of_question='true or false', difficulty='m
                      'You are given a random portion of a book so, when you generate a question, avoid referring to its figures, ' + \
                      'to its chapters, its lines or pages as if the user knew all the book by heart (see Remark 7). ' + \
                      'The question should be more focused on the understanding of the note rather than its grammar. ' + \
-                     'The difficulty of the question is: ' + difficulty + \
-                     '. Kind of question: ' + type_of_question + '.' + \
+                     'Kind of question: ' + type_of_question + '.' + \
                      "\nRemark 1: The output must be in the format 'QUESTION: [...] ? CORRECT ANSWER: [...] .' " + \
                      "\nRemark 2: In the CORRECT ANSWER, explain also why the answer is correct." + \
                      "\nRemark 3: In the case of a 'closed question' there must be A, B, C, or D as possible answers." + \

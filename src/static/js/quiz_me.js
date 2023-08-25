@@ -1,11 +1,3 @@
-let slider = document.getElementById("difficultySlider");
-let output = document.getElementById("difficulty");
-output.innerHTML = slider.value == 1 ? "Easy" : (slider.value == 2 ? "Medium" : "Hard");
-
-slider.oninput = function() {
-    output.innerHTML = this.value == 1 ? "Easy" : (this.value == 2 ? "Medium" : "Hard");
-}
-
 // Store the value of answer
 var answer;
 
@@ -34,25 +26,30 @@ function createAnswerButtons(answers) {
 document.getElementById('open-question-button').addEventListener('click', function() {
     clearOutput();
 
-    let difficulty = document.getElementById("difficulty").innerHTML;
-
     fetch('/question', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({difficulty: difficulty, type_of_question: 'open question'})
+        body: JSON.stringify({type_of_question: 'open question'})
     })
         .then(response => response.json())
         .then(data => {
             var outputDiv = document.getElementById('output');
-            outputDiv.textContent = data.question;
+            // Remove this line to avoid duplicating the question
+            // outputDiv.textContent = data.question;
             answer = data.answer;
 
-            // Create a container div element for the textarea and submit button
+            // Create a container div element for the question, textarea, submit button, and answer-output
             var containerDiv = document.createElement('div');
             containerDiv.style.display = 'block';
+            containerDiv.className = 'p-5 bg-primary-subtle rounded-5'; // Add the desired class here
             outputDiv.appendChild(containerDiv);
+
+            // Create a div element for the question
+            var questionDiv = document.createElement('div');
+            questionDiv.textContent = data.question;
+            containerDiv.appendChild(questionDiv);
 
             // Create a textarea element for user input
             var textarea = document.createElement('textarea');
@@ -69,6 +66,10 @@ document.getElementById('open-question-button').addEventListener('click', functi
             submitButton.textContent = 'Submit';
             containerDiv.appendChild(submitButton);
 
+            // Create a div element for the answer-output
+            var answerOutputDiv = document.createElement('div');
+            containerDiv.appendChild(answerOutputDiv);
+
             // Add an event listener to the submit button
             submitButton.addEventListener('click', function() {
                 var guess = textarea.value;
@@ -82,7 +83,6 @@ document.getElementById('open-question-button').addEventListener('click', functi
                 })
                     .then(response => response.json())
                     .then(data => {
-                        var answerOutputDiv = document.getElementById('answer-output');
                         answerOutputDiv.textContent = data.response;
                     });
             });
@@ -93,30 +93,56 @@ document.getElementById('open-question-button').addEventListener('click', functi
 document.getElementById('true-false-button').addEventListener('click', function() {
     clearOutput();
 
-    let difficulty = document.getElementById("difficulty").innerHTML;
-
     fetch('/question', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({difficulty: difficulty, type_of_question: 'true or false'})
+        body: JSON.stringify({type_of_question: 'true or false'})
     })
         .then(response => response.json())
         .then(data => {
             var outputDiv = document.getElementById('output');
-            outputDiv.textContent = data.question;
+            // Remove this line to avoid duplicating the question
+            // outputDiv.textContent = data.question;
             answer = data.answer;
 
-            // Create answer buttons
-            var answers = [
-                { label: 'True', color: '#007bff' },
-                { label: 'False', color: '#007bff' }
-            ];
-            createAnswerButtons(answers);
+             // Create a container div element for the question, textarea, submit button, and answer-output
+             var containerDiv = document.createElement('div');
+             containerDiv.style.display = 'block';
+             containerDiv.className = 'p-5 bg-primary-subtle rounded-5'; // Add the desired class here
+             outputDiv.appendChild(containerDiv);
+
+             // Create a div element for the question
+             var questionDiv = document.createElement('div');
+             questionDiv.textContent = data.question;
+             containerDiv.appendChild(questionDiv);
+
+             // Create a div element for the answer-buttons
+             var answerButtonsDiv = document.createElement('div');
+             containerDiv.appendChild(answerButtonsDiv);
+
+             // Create a div element for the answer-output
+             var answerOutputDiv = document.createElement('div');
+             containerDiv.appendChild(answerOutputDiv);
+
+             // Create answer buttons and append them to the answer-buttons div element
+             var answers = [
+                 { label: 'True', color: '#007bff' },
+                 { label: 'False', color: '#007bff' }
+             ];
+             for (var i = 0; i < answers.length; i++) {
+                 var answerButton = document.createElement('button');
+                 answerButton.type = 'button';
+                 answerButton.className = 'btn btn-primary my-2';
+                 answerButton.style.marginRight = '5px';
+                 answerButton.textContent = answers[i].label;
+                 answerButton.style.backgroundColor = answers[i].color;
+                 answerButtonsDiv.appendChild(answerButton);
+             }
 
             // Add an event listener to the answer buttons
-            var answerButtons = document.querySelectorAll('#answer-buttons > button');
+            var answerButtons = answerButtonsDiv.querySelectorAll('button'); // Fix this line to correctly select the answer buttons
             for (var i = 0; i < answerButtons.length; i++) {
                 answerButtons[i].addEventListener('click', function() {
                     var guess = this.textContent;
@@ -130,7 +156,6 @@ document.getElementById('true-false-button').addEventListener('click', function(
                     })
                         .then(response => response.json())
                         .then(data => {
-                            var answerOutputDiv = document.getElementById('answer-output');
                             answerOutputDiv.textContent = data.response;
                             if (data.response.startsWith("Correct")) {
                                 this.style.backgroundColor = '#28a745';
@@ -147,32 +172,58 @@ document.getElementById('true-false-button').addEventListener('click', function(
 document.getElementById('closed-question-button').addEventListener('click', function() {
     clearOutput();
 
-    let difficulty = document.getElementById("difficulty").innerHTML;
-
     fetch('/question', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({difficulty: difficulty, type_of_question: 'closed question'})
+        body: JSON.stringify({type_of_question: 'closed question'})
     })
         .then(response => response.json())
         .then(data => {
             var outputDiv = document.getElementById('output');
-            outputDiv.textContent = data.question;
+            // Remove this line to avoid duplicating the question
+            // outputDiv.textContent = data.question;
             answer = data.answer;
 
-            // Create answer buttons
-            var answers = [
-                { label: 'A', color: '#007bff' },
-                { label: 'B', color: '#007bff' },
-                { label: 'C', color: '#007bff' },
-                { label: 'D', color: '#007bff' }
-            ];
-            createAnswerButtons(answers);
+             // Create a container div element for the question, textarea, submit button, and answer-output
+             var containerDiv = document.createElement('div');
+             containerDiv.style.display = 'block';
+             containerDiv.className = 'p-5 bg-primary-subtle rounded-5'; // Add the desired class here
+             outputDiv.appendChild(containerDiv);
+
+             // Create a div element for the question
+             var questionDiv = document.createElement('div');
+             questionDiv.textContent = data.question;
+             containerDiv.appendChild(questionDiv);
+
+             // Create a div element for the answer-buttons
+             var answerButtonsDiv = document.createElement('div');
+             containerDiv.appendChild(answerButtonsDiv);
+
+             // Create a div element for the answer-output
+             var answerOutputDiv = document.createElement('div');
+             containerDiv.appendChild(answerOutputDiv);
+
+             // Create answer buttons and append them to the answer-buttons div element
+             var answers = [
+                 { label: 'A', color: '#007bff' },
+                 { label: 'B', color: '#007bff' },
+                 { label: 'C', color: '#007bff' },
+                 { label: 'D', color: '#007bff' }
+             ];
+             for (var i = 0; i < answers.length; i++) {
+                 var answerButton = document.createElement('button');
+                 answerButton.type = 'button';
+                 answerButton.className = 'btn btn-primary my-2';
+                 answerButton.style.marginRight = '5px';
+                 answerButton.textContent = answers[i].label;
+                 answerButton.style.backgroundColor = answers[i].color;
+                 answerButtonsDiv.appendChild(answerButton);
+             }
 
             // Add an event listener to the answer buttons
-            var answerButtons = document.querySelectorAll('#answer-buttons > button');
+            var answerButtons = answerButtonsDiv.querySelectorAll('button'); // Fix this line to correctly select the answer buttons
             for (var i = 0; i < answerButtons.length; i++) {
                 answerButtons[i].addEventListener('click', function() {
                     var guess = this.textContent;
@@ -186,7 +237,6 @@ document.getElementById('closed-question-button').addEventListener('click', func
                     })
                         .then(response => response.json())
                         .then(data => {
-                            var answerOutputDiv = document.getElementById('answer-output');
                             answerOutputDiv.textContent = data.response;
                             if (data.response.startsWith("Correct")) {
                                 this.style.backgroundColor = '#28a745';

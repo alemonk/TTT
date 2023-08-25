@@ -6,11 +6,15 @@
     ></script>
 <head>
     <title>Personalized Test</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         .progress-bar {
             height: 20px;
             background-color: #007bff;
+        }
+        .slider-container {
+            display: inline-block;
+            margin-right: 20px;
+            text-align: center;
         }
     </style>
 </head>
@@ -24,26 +28,29 @@
 
     <br />
     <div align="center">
-        <!-- Difficulty slider -->
-        <p>Difficulty:</p>
-        <input type="range" min="1" max="3" value="2" class="slider" id="difficultySlider">
-        <p><span id="difficulty"></span></p>
 
         <!-- Number of open questions slider -->
-        <p>Number of open questions:</p>
-        <input type="range" min="0" max="10" value="1" class="slider" id="numOpenQuestionsSlider">
-        <p><span id="numOpenQuestions"></span></p>
+        <div class="slider-container">
+            <p>Number of open questions:</p>
+            <input type="range" min="0" max="10" value="1" class="slider" id="numOpenQuestionsSlider">
+            <p><span id="numOpenQuestions"></span></p>
+        </div>
 
         <!-- Number of true or false questions slider -->
-        <p>Number of true or false questions:</p>
-        <input type="range" min="0" max="10" value="1" class="slider" id="numTrueFalseQuestionsSlider">
-        <p><span id="numTrueFalseQuestions"></span></p>
+        <div class="slider-container">
+            <p>Number of true or false questions:</p>
+            <input type="range" min="0" max="10" value="1" class="slider" id="numTrueFalseQuestionsSlider">
+            <p><span id="numTrueFalseQuestions"></span></p>
+        </div>
 
         <!-- Number of closed questions slider -->
-        <p>Number of closed questions:</p>
-        <input type="range" min="0" max="10" value="1" class="slider" id="numClosedQuestionsSlider">
-        <p><span id="numClosedQuestions"></span></p>
+        <div class="slider-container">
+            <p>Number of closed questions:</p>
+            <input type="range" min="0" max="10" value="1" class="slider" id="numClosedQuestionsSlider">
+            <p><span id="numClosedQuestions"></span></p>
+        </div>
 
+        <br />
         <!-- Create test button -->
         <button type="button" class="btn btn-primary" id="createTestButton">
             Create Test
@@ -54,6 +61,6 @@
     <br />
     <div id="output" style="margin-top: 10px; text-align: left;"></div>
 
-{% endblock %}
+    {% endblock %}
 </body>
 </html>
