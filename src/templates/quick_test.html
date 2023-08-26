@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <script defer
+        type="text/javascript"
+        src="{{ url_for('static', filename='js/quiz_me.js') }}"
+    ></script>
+<head>
+    <title>QuizMe</title>
+</head>
+<body>
+    {% extends "base.html" %}
+    {% block title %}Quick Test{% endblock %}
+    {% block content %}
+
+    <br />
+    <h3 align="center">Quick Test</h3>
+
+    <div align="center" class="my-3">
+        <!-- Question buttons -->
+        <button type="button" class="btn btn-primary" id="open-question-button">
+            Open Question
+        </button>
+        <button type="button" class="btn btn-primary" id="true-false-button">
+            True or False
+        </button>
+        <button type="button" class="btn btn-primary" id="closed-question-button">
+            Closed Question
+        </button>
+    </div>
+
+    <!-- Output divs -->
+    <div id="output" style="margin-top: 10px; text-align: left;"></div>
+    <div id="answer-buttons" style="margin-top: 10px;"></div>
+    <div id="answer-output" style="margin-top: 10px; text-align: left;"></div>
+
+{% endblock %}
+</body>
+</html>

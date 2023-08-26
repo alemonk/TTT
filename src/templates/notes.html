@@ -21,23 +21,34 @@
 <h3 align="center">Notes</h3>
 <br />
 
-<div class="drop-area">
-  <p>Drag and drop files here</p>
+<div class="mb-3">
+    <input type="file" id="formFileMultiple" multiple style="display: none;" onchange="handleFiles(this.files)">
+    <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="document.getElementById('formFileMultiple').click()"
+    >
+        Choose Files
+    </button>
+    <br />
+    <p class="fs-6">(refresh the page to see changes)</p>
 </div>
 
 <br />
 
 <ul class="list-group list-group-flush" id="notes">
     {% for note in user.notes %}
-    <li class="list-group-item">
-        <div class="note-title" onclick="toggleNoteContent(this, {{ note.id }})">
+    <li class="list-group-item rounded-3 mb-3 bg-primary-subtle">
+        <div class="note-title bg-light" onclick="toggleNoteContent(this, {{ note.id }})">
             {{ note.title }}
-
         </div>
         <div class="note-content" style="display: none;">
         </div>
-        <button type="button" class="btn-close" aria-label="Close" onclick="deleteNote({{ note.id }})">
-        </button>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-close mt-2" aria-label="Close" onclick="deleteNote({{ note.id }})">
+            </button>
+        </div>
+
     </li>
     {% endfor %}
 </ul>

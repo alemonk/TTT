@@ -6,17 +6,6 @@
     ></script>
 <head>
     <title>Personalized Test</title>
-    <style>
-        .progress-bar {
-            height: 20px;
-            background-color: #007bff;
-        }
-        .slider-container {
-            display: inline-block;
-            margin-right: 20px;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
     {% extends "base.html" %}
@@ -27,32 +16,84 @@
     <h3 align="center">Personalized Test</h3>
 
     <br />
+    <div class="container text-center">
+        <div class="row align-items-start">
+            <div class="col">
+                <!-- Number of open questions -->
+                <div class="container">
+                    <p>Number of open questions:</p>
+                    <select
+                            class="form-select"
+                            id="numOpenQuestions"
+                            aria-label="Default select example"
+                    >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+                </div>
+            </div>
+
+            <div class="col">
+                <!-- Number of open questions -->
+                <div class="container">
+                    <p>Number of open questions:</p>
+                    <select
+                            class="form-select"
+                            id="numTrueFalseQuestions"
+                            aria-label="Default select example"
+                    >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+                </div>
+            </div>
+
+            <div class="col">
+                <!-- Number of open questions -->
+                <div class="container">
+                    <p>Number of open questions:</p>
+                    <select
+                            class="form-select"
+                            id="numClosedQuestions"
+                            aria-label="Default select example"
+                    >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <div align="center">
-
-        <!-- Number of open questions slider -->
-        <div class="slider-container">
-            <p>Number of open questions:</p>
-            <input type="range" min="0" max="10" value="1" class="slider" id="numOpenQuestionsSlider">
-            <p><span id="numOpenQuestions"></span></p>
-        </div>
-
-        <!-- Number of true or false questions slider -->
-        <div class="slider-container">
-            <p>Number of true or false questions:</p>
-            <input type="range" min="0" max="10" value="1" class="slider" id="numTrueFalseQuestionsSlider">
-            <p><span id="numTrueFalseQuestions"></span></p>
-        </div>
-
-        <!-- Number of closed questions slider -->
-        <div class="slider-container">
-            <p>Number of closed questions:</p>
-            <input type="range" min="0" max="10" value="1" class="slider" id="numClosedQuestionsSlider">
-            <p><span id="numClosedQuestions"></span></p>
-        </div>
-
         <br />
         <!-- Create test button -->
-        <button type="button" class="btn btn-primary" id="createTestButton">
+        <button type="button" class="btn btn-secondary" id="createTestButton">
             Create Test
         </button>
     </div>

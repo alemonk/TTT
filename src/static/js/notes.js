@@ -1,26 +1,3 @@
-const dropArea = document.querySelector('.drop-area');
-
-dropArea.addEventListener('dragover', (event) => {
-  event.preventDefault();
-});
-
-
-window.addEventListener("dragover",function(e){
-  e = e || event;
-  e.preventDefault();
-},false);
-window.addEventListener("drop",function(e){
-  e = e || event;
-  e.preventDefault();
-},false);
-
-dropArea.addEventListener('drop', (event) => {
-  event.preventDefault();
-  const files = event.dataTransfer.files;
-  handleFiles(files);
-});
-
-
 function handleFiles(files) {
   for (const file of files) {
     const reader = new FileReader();
@@ -52,7 +29,7 @@ function toggleNoteContent(element, noteId) {
   if (noteContent.style.display === 'none') {
     const formData = new FormData();
     formData.append('note_id', noteId);
-    fetch('/note-content', {
+    fetch('/open-note', {
       method: 'POST',
       body: formData
     })

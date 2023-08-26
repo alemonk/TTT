@@ -19,7 +19,7 @@ def login():
         if user:
             if check_password_hash(user.password, password):
                 login_user(user, remember=True)
-                return redirect((url_for('views.create_note')))
+                return redirect((url_for('auth.home')))
             else:
                 flash('Incorrect password.', category='error')
         else:
@@ -68,12 +68,13 @@ def sign_up():
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
 
-            return redirect((url_for('views.create_note')))
+            return redirect((url_for('auth.home')))
 
     return render_template("sign_up.html", user=current_user)
 
 
 @auth.route('/home', methods=['GET'])
+@login_required
 def home():
-    print('home (home screen) route called')
+    print('home route called')
     return render_template("home.html", user=current_user)

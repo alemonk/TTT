@@ -1,3 +1,27 @@
+let numOpenQuestionsSlider = document.getElementById("numOpenQuestionsSlider");
+let numOpenQuestionsOutput = document.getElementById("numOpenQuestions");
+numOpenQuestionsOutput.innerHTML = numOpenQuestionsSlider.value;
+
+numOpenQuestionsSlider.oninput = function() {
+    numOpenQuestionsOutput.innerHTML = this.value;
+}
+
+let numTrueFalseQuestionsSlider = document.getElementById("numTrueFalseQuestionsSlider");
+let numTrueFalseQuestionsOutput = document.getElementById("numTrueFalseQuestions");
+numTrueFalseQuestionsOutput.innerHTML = numTrueFalseQuestionsSlider.value;
+
+numTrueFalseQuestionsSlider.oninput = function() {
+    numTrueFalseQuestionsOutput.innerHTML = this.value;
+}
+
+let numClosedQuestionsSlider = document.getElementById("numClosedQuestionsSlider");
+let numClosedQuestionsOutput = document.getElementById("numClosedQuestions");
+numClosedQuestionsOutput.innerHTML = numClosedQuestionsSlider.value;
+
+numClosedQuestionsSlider.oninput = function() {
+    numClosedQuestionsOutput.innerHTML = this.value;
+}
+
 // Clear the content of the output div element
 function clearOutput() {
     document.getElementById('output').innerHTML = '';
@@ -20,10 +44,9 @@ function createAnswerButtons(answers, containerDiv) {
 document.getElementById('createTestButton').addEventListener('click', function() {
     clearOutput();
 
-    let numOpenQuestions = parseInt(document.getElementById("numOpenQuestions").value);
-    let numTrueFalseQuestions = parseInt(document.getElementById("numTrueFalseQuestions").value);
-    let numClosedQuestions = parseInt(document.getElementById("numClosedQuestions").value);
-
+    let numOpenQuestions = parseInt(document.getElementById("numOpenQuestions").innerHTML);
+    let numTrueFalseQuestions = parseInt(document.getElementById("numTrueFalseQuestions").innerHTML);
+    let numClosedQuestions = parseInt(document.getElementById("numClosedQuestions").innerHTML);
     let numQuestions = numOpenQuestions + numTrueFalseQuestions + numClosedQuestions;
 
     let questionTypes = ['open question', 'true or false', 'closed question'];
@@ -263,6 +286,8 @@ document.getElementById('createTestButton').addEventListener('click', function()
                 // Process the next item in the queue
                 processQueue();
             });
+
+        // Add 'save' button that saves the test in a database
     }
 
     // Modify the for loop to enqueue the requests instead of sending them directly

@@ -128,8 +128,8 @@ document.getElementById('true-false-button').addEventListener('click', function(
 
              // Create answer buttons and append them to the answer-buttons div element
              var answers = [
-                 { label: 'True', color: '#007bff' },
-                 { label: 'False', color: '#007bff' }
+                 { label: 'True', color: '#29A6FF' },
+                 { label: 'False', color: '#29A6FF' }
              ];
              for (var i = 0; i < answers.length; i++) {
                  var answerButton = document.createElement('button');
@@ -207,10 +207,10 @@ document.getElementById('closed-question-button').addEventListener('click', func
 
              // Create answer buttons and append them to the answer-buttons div element
              var answers = [
-                 { label: 'A', color: '#007bff' },
-                 { label: 'B', color: '#007bff' },
-                 { label: 'C', color: '#007bff' },
-                 { label: 'D', color: '#007bff' }
+                 { label: 'A', color: '#29A6FF' },
+                 { label: 'B', color: '#29A6FF' },
+                 { label: 'C', color: '#29A6FF' },
+                 { label: 'D', color: '#29A6FF' }
              ];
              for (var i = 0; i < answers.length; i++) {
                  var answerButton = document.createElement('button');
