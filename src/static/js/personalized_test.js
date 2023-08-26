@@ -263,6 +263,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                 // Process the next item in the queue
                 processQueue();
             });
+
     }
 
     // Modify the for loop to enqueue the requests instead of sending them directly
@@ -282,5 +283,18 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
     // Start processing the queue
     processQueue();
+
+    // Insert 'save' and 'check answers' buttons
+    var checkAnswersButton = document.createElement('button');
+    checkAnswersButton.type = 'button';
+    checkAnswersButton.className = 'btn btn-secondary m-2';
+    checkAnswersButton.textContent = 'Check Answers';
+    containerDiv.appendChild(checkAnswersButton);
+
+    var saveButton = document.createElement('button');
+    saveButton.type = 'button';
+    saveButton.className = 'btn btn-secondary m-2';
+    saveButton.textContent = 'Save test';
+    containerDiv.appendChild(saveButton);
 
 });

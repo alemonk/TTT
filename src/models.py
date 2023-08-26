@@ -13,16 +13,18 @@ class Note(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
-'''
 # The Test class represents a user's saved tests in the database.
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
-    questions = ''
-    answers = ''
+    questions = db.Column(db.PickleType)
+    answers = db.Column(db.PickleType)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-'''
+
+    def __init__(self, *args, **kwargs):
+        super(Test, self).__init__(*args, **kwargs)
+        self.title = 'test ' + self.date.strftime('%Y-%m-%d %H:%M:%S')
 
 
 # The User class represents a user account in the database.
@@ -35,4 +37,4 @@ class User(db.Model, UserMixin):
     true_or_false_pref = db.Column(db.Integer)
     closed_question_pref = db.Column(db.Integer)
     notes = db.relationship('Note')
-    # tests = db.relationship('Test')
+    tests = db.relationship('Test')
