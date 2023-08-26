@@ -120,7 +120,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
                         // Create a container div element for the question and answer
                         var containerDiv=document.createElement('div');
-                        containerDiv.className='p-5 bg-secondary-subtle rounded-5 my-3';
+                        containerDiv.className='p-5 bg-primary-subtle rounded-5 my-3';
                         outputDiv.appendChild(containerDiv);
 
                         // Create a p element for the question
@@ -168,8 +168,8 @@ document.getElementById('createTestButton').addEventListener('click', function()
                         } else if (data.type_of_question == 'true or false') {
                             // Create answer buttons
                             var answers = [
-                                { label: 'True', color: '#29A6FF' },
-                                { label: 'False', color: '#29A6FF' }
+                                { label: 'True' },
+                                { label: 'False' }
                             ];
                             createAnswerButtons(answers, containerDiv);
 
@@ -213,10 +213,10 @@ document.getElementById('createTestButton').addEventListener('click', function()
                         } else if (data.type_of_question == 'closed question') {
                             // Create answer buttons
                             var answers = [
-                                { label: 'A', color: '#29A6FF' },
-                                { label: 'B', color: '#29A6FF' },
-                                { label: 'C', color: '#29A6FF' },
-                                { label: 'D', color: '#29A6FF' }
+                                { label: 'A' },
+                                { label: 'B' },
+                                { label: 'C' },
+                                { label: 'D' }
                             ];
                             createAnswerButtons(answers, containerDiv);
 

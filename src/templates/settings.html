@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 </head>
+    <title>Personalized Test</title>
 <body>
 
     {% extends "base.html" %}
@@ -35,8 +36,10 @@
           <select
                   class="form-select"
                   id="numOpenQuestions"
+                  name="numOpenQuestions"
                   aria-label="Default select example"
           >
+          <option value="0">0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -58,8 +61,10 @@
           <select
                   class="form-select"
                   id="numTrueFalseQuestions"
+                  name="numTrueFalseQuestions"
                   aria-label="Default select example"
           >
+          <option value="0">0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -81,8 +86,10 @@
           <select
                   class="form-select"
                   id="numClosedQuestions"
+                  name="numClosedQuestions"
                   aria-label="Default select example"
           >
+          <option value="0">0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -111,6 +118,19 @@
 
 </div>
 
-    {% endblock %}
+<script>
+    // Set selected options based on user preferences
+    document.addEventListener("DOMContentLoaded", function () {
+        var numOpenQuestions = "{{ user.open_question_pref }}";
+        var numTrueFalseQuestions = "{{ user.true_or_false_pref }}";
+        var numClosedQuestions = "{{ user.closed_question_pref }}";
+
+        document.getElementById("numOpenQuestions").value = numOpenQuestions;
+        document.getElementById("numTrueFalseQuestions").value = numTrueFalseQuestions;
+        document.getElementById("numClosedQuestions").value = numClosedQuestions;
+    });
+</script>
+
+{% endblock %}
 </body>
 </html>

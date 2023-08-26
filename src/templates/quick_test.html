@@ -2,93 +2,18 @@
 <html>
     <script defer
         type="text/javascript"
-        src="{{ url_for('static', filename='js/personalized_test.js') }}"
+        src="{{ url_for('static', filename='js/quick_test.js') }}"
     ></script>
 <head>
-    <title>Personalized Test</title>
+    <title>Quick Test</title>
 </head>
 <body>
     {% extends "base.html" %}
-    {% block title %}Personalized Test{% endblock %}
+    {% block title %}Quick Test{% endblock %}
     {% block content %}
 
     <br />
-    <h3 align="center">Personalized Test</h3>
-
-    <br />
-    <div class="container text-center">
-        <div class="row align-items-start">
-            <div class="col">
-                <!-- Number of open questions -->
-                <div class="container">
-                    <p>Number of open questions:</p>
-                    <select
-                            class="form-select"
-                            id="numOpenQuestions"
-                            aria-label="Default select example"
-                    >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-                </div>
-            </div>
-
-            <div class="col">
-                <!-- Number of open questions -->
-                <div class="container">
-                    <p>Number of open questions:</p>
-                    <select
-                            class="form-select"
-                            id="numTrueFalseQuestions"
-                            aria-label="Default select example"
-                    >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-                </div>
-            </div>
-
-            <div class="col">
-                <!-- Number of open questions -->
-                <div class="container">
-                    <p>Number of open questions:</p>
-                    <select
-                            class="form-select"
-                            id="numClosedQuestions"
-                            aria-label="Default select example"
-                    >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-                </div>
-            </div>
-
-        </div>
-    </div>
+    <h3 align="center">Quick Test</h3>
 
     <div align="center">
         <br />
