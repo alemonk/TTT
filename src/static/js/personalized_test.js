@@ -8,7 +8,7 @@ function createAnswerButtons(answers, containerDiv) {
     for (var i = 0; i < answers.length; i++) {
         var answerButton = document.createElement('button');
         answerButton.type = 'button';
-        answerButton.className = 'btn btn-primary my-2';
+        answerButton.className = 'btn btn-secondary my-2';
         answerButton.style.marginRight = '5px';
         answerButton.textContent = answers[i].label;
         answerButton.style.backgroundColor = answers[i].color;
@@ -36,7 +36,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
     // Create a progress bar element
     var progressBar = document.createElement('div');
-    progressBar.className = 'progressbar';
+    progressBar.className = 'progress bg-primary';
     progressBar.role = 'progressbar';
     progressBar.style.width = '0%';
 
@@ -120,7 +120,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
                         // Create a container div element for the question and answer
                         var containerDiv=document.createElement('div');
-                        containerDiv.className='p-5 bg-primary-subtle rounded-5 my-3';
+                        containerDiv.className='p-5 bg-secondary-subtle rounded-5 my-3';
                         outputDiv.appendChild(containerDiv);
 
                         // Create a p element for the question
@@ -139,7 +139,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                             // Create a submit button for user input
                             var submitButton=document.createElement('button');
                             submitButton.type='button';
-                            submitButton.className='btn btn-primary';
+                            submitButton.className='btn btn-secondary my-2';
                             submitButton.style.marginTop='10px';
                             submitButton.textContent='Submit';
                             containerDiv.appendChild(submitButton);

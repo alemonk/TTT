@@ -1,27 +1,3 @@
-let numOpenQuestionsSlider = document.getElementById("numOpenQuestionsSlider");
-let numOpenQuestionsOutput = document.getElementById("numOpenQuestions");
-numOpenQuestionsOutput.innerHTML = numOpenQuestionsSlider.value;
-
-numOpenQuestionsSlider.oninput = function() {
-    numOpenQuestionsOutput.innerHTML = this.value;
-}
-
-let numTrueFalseQuestionsSlider = document.getElementById("numTrueFalseQuestionsSlider");
-let numTrueFalseQuestionsOutput = document.getElementById("numTrueFalseQuestions");
-numTrueFalseQuestionsOutput.innerHTML = numTrueFalseQuestionsSlider.value;
-
-numTrueFalseQuestionsSlider.oninput = function() {
-    numTrueFalseQuestionsOutput.innerHTML = this.value;
-}
-
-let numClosedQuestionsSlider = document.getElementById("numClosedQuestionsSlider");
-let numClosedQuestionsOutput = document.getElementById("numClosedQuestions");
-numClosedQuestionsOutput.innerHTML = numClosedQuestionsSlider.value;
-
-numClosedQuestionsSlider.oninput = function() {
-    numClosedQuestionsOutput.innerHTML = this.value;
-}
-
 // Clear the content of the output div element
 function clearOutput() {
     document.getElementById('output').innerHTML = '';
@@ -32,7 +8,7 @@ function createAnswerButtons(answers, containerDiv) {
     for (var i = 0; i < answers.length; i++) {
         var answerButton = document.createElement('button');
         answerButton.type = 'button';
-        answerButton.className = 'btn btn-primary my-2';
+        answerButton.className = 'btn btn-secondary my-2';
         answerButton.style.marginRight = '5px';
         answerButton.textContent = answers[i].label;
         answerButton.style.backgroundColor = answers[i].color;
@@ -44,9 +20,10 @@ function createAnswerButtons(answers, containerDiv) {
 document.getElementById('createTestButton').addEventListener('click', function() {
     clearOutput();
 
-    let numOpenQuestions = parseInt(document.getElementById("numOpenQuestions").innerHTML);
-    let numTrueFalseQuestions = parseInt(document.getElementById("numTrueFalseQuestions").innerHTML);
-    let numClosedQuestions = parseInt(document.getElementById("numClosedQuestions").innerHTML);
+    let numOpenQuestions = parseInt(document.getElementById("numOpenQuestions").value);
+    let numTrueFalseQuestions = parseInt(document.getElementById("numTrueFalseQuestions").value);
+    let numClosedQuestions = parseInt(document.getElementById("numClosedQuestions").value);
+
     let numQuestions = numOpenQuestions + numTrueFalseQuestions + numClosedQuestions;
 
     let questionTypes = ['open question', 'true or false', 'closed question'];
@@ -59,7 +36,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
     // Create a progress bar element
     var progressBar = document.createElement('div');
-    progressBar.className = 'progressbar';
+    progressBar.className = 'progress bg-primary';
     progressBar.role = 'progressbar';
     progressBar.style.width = '0%';
 
@@ -143,7 +120,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
                         // Create a container div element for the question and answer
                         var containerDiv=document.createElement('div');
-                        containerDiv.className='p-5 bg-primary-subtle rounded-5 my-3';
+                        containerDiv.className='p-5 bg-secondary-subtle rounded-5 my-3';
                         outputDiv.appendChild(containerDiv);
 
                         // Create a p element for the question
@@ -162,7 +139,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                             // Create a submit button for user input
                             var submitButton=document.createElement('button');
                             submitButton.type='button';
-                            submitButton.className='btn btn-primary';
+                            submitButton.className='btn btn-secondary my-2';
                             submitButton.style.marginTop='10px';
                             submitButton.textContent='Submit';
                             containerDiv.appendChild(submitButton);
@@ -286,8 +263,6 @@ document.getElementById('createTestButton').addEventListener('click', function()
                 // Process the next item in the queue
                 processQueue();
             });
-
-        // Add 'save' button that saves the test in a database
     }
 
     // Modify the for loop to enqueue the requests instead of sending them directly

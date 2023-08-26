@@ -26,11 +26,3 @@ def quick_test():
 def personalized_test():
     print('\n\nPersonalized test route called')
     return render_template("personalized_test.html", user=current_user)
-
-
-# Route for settings
-@views.route('/settings')
-@login_required
-def settings():
-    print('\n\nSettings route called')
-    return render_template("settings.html", user=current_user)
