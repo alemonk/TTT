@@ -1,6 +1,7 @@
 from . import db
 from flask_login import UserMixin
 from sqlalchemy import func
+import datetime
 
 
 # The Note class represents a user's note in the database.
@@ -19,12 +20,14 @@ class Test(db.Model):
     title = db.Column(db.String(150))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     questions = db.Column(db.PickleType)
+    guesses = db.Column(db.PickleType)
     answers = db.Column(db.PickleType)
+    question_types = db.Column(db.PickleType)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __init__(self, *args, **kwargs):
         super(Test, self).__init__(*args, **kwargs)
-        self.title = 'test ' + self.date.strftime('%Y-%m-%d %H:%M:%S')
+        self.title = 'test ' + str(datetime.datetime.now())
 
 
 # The User class represents a user account in the database.

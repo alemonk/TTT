@@ -54,6 +54,8 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
     // Create an array to store the generated questions
     let generated_questions = [];
+    // Create an array to store the user guesses
+    let user_guesses = [];
 
     // Create a queue class
     class Queue {
@@ -103,6 +105,9 @@ document.getElementById('createTestButton').addEventListener('click', function()
         })
             .then(response => response.json())
             .then(data => {
+
+                createTestButton.classList.add('disabled')
+
                 // Update the progress bar and text
                 numQuestionsGenerated++;
                 let progressPercentage = Math.floor((numQuestionsGenerated / numQuestionTypesPerType.reduce((a, b) => parseInt(a) + parseInt(b), 0)) * 100);
@@ -141,15 +146,22 @@ document.getElementById('createTestButton').addEventListener('click', function()
                             submitButton.type='button';
                             submitButton.className='btn btn-secondary my-2';
                             submitButton.style.marginTop='10px';
-                            submitButton.textContent='Submit';
+                            submitButton.textContent='Save';
                             containerDiv.appendChild(submitButton);
 
                             // Add an event listener to the submit button
                             submitButton.addEventListener('click', (function(containerDiv) {
                                 return function() {
+                                    // Change text on the button to show that the answer was correctly saved
+                                    submitButton.textContent='Answer saved!';
+
                                     var guess = textarea.value;
                                     var question = data.question;
                                     var answer = data.answer;
+
+                                    // Add guess and correct answer to the respective arrays
+                                    user_guesses.push({ question: data.question, guess: guess, answer: data.answer, type_of_question: data.type_of_question })
+
                                     fetch('/open_question_check_answer', {
                                         method: 'POST',
                                         headers: {
@@ -161,6 +173,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                         .then(data => {
                                             var answerP = document.createElement('p');
                                             answerP.textContent = data.response;
+                                            answerP.classList.add('visually-hidden');
                                             containerDiv.appendChild(answerP);
                                         });
                                 };
@@ -180,6 +193,10 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                     answerButtons[i].addEventListener('click', function() {
                                         var guess = this.textContent;
                                         var question = data.question;
+
+                                        // Add guess and correct answer to the respective arrays
+                                        user_guesses.push({ question: data.question, guess: guess, answer: data.answer, type_of_question: data.type_of_question })
+
                                         fetch('/true_or_false_check_answer', {
                                             method: 'POST',
                                             headers: {
@@ -199,12 +216,19 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                                 var answerP = document.createElement('p');
                                                 answerP.className = 'answer';
                                                 answerP.textContent = data.response;
+                                                answerP.classList.add('visually-hidden');
                                                 containerDiv.appendChild(answerP);
-                                                if (data.response.startsWith("Correct")) {
-                                                    this.style.backgroundColor = '#28a745';
-                                                } else {
-                                                    this.style.backgroundColor = '#dc3545';
+
+                                                // Remove the 'primary' class from all the answer buttons
+                                                var answerButtons = containerDiv.querySelectorAll('button');
+                                                for (var j = 0; j < answerButtons.length; j++) {
+                                                    answerButtons[j].classList.remove('btn-primary');
+                                                    answerButtons[j].classList.add('btn-secondary');
                                                 }
+
+                                                // Add the 'primary' class to the clicked button
+                                                this.classList.remove('btn-secondary');
+                                                this.classList.add('btn-primary');
                                             });
                                     });
                                 })(containerDiv);
@@ -227,6 +251,10 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                     answerButtons[i].addEventListener('click', function() {
                                         var guess = this.textContent;
                                         var question = data.question;
+
+                                        // Add guess and correct answer to the respective arrays
+                                        user_guesses.push({ question: data.question, guess: guess, answer: data.answer, type_of_question: data.type_of_question })
+
                                         fetch('/closed_question_check_answer', {
                                             method: 'POST',
                                             headers: {
@@ -246,22 +274,33 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                                 var answerP = document.createElement('p');
                                                 answerP.className = 'answer';
                                                 answerP.textContent = data.response;
+                                                answerP.classList.add('visually-hidden');
                                                 containerDiv.appendChild(answerP);
-                                                if (data.response.startsWith("Correct")) {
-                                                    this.style.backgroundColor = '#28a745';
-                                                } else {
-                                                    this.style.backgroundColor = '#dc3545';
+
+                                                // Remove the 'primary' class from all the answer buttons
+                                                var answerButtons = containerDiv.querySelectorAll('button');
+                                                for (var j = 0; j < answerButtons.length; j++) {
+                                                    answerButtons[j].classList.remove('btn-primary');
+                                                    answerButtons[j].classList.add('btn-secondary');
                                                 }
+
+                                                // Add the 'primary' class to the clicked button
+                                                this.classList.remove('btn-secondary');
+                                                this.classList.add('btn-primary');
                                             });
                                     });
                                 })(containerDiv);
                             }
                         }
                     }
+
+                    // Call the createCheckAnswersButton function to create the button
+                    createCheckAnswersButton(outputDiv, user_guesses);
                 }
 
                 // Process the next item in the queue
                 processQueue();
+
             });
 
     }
@@ -284,17 +323,91 @@ document.getElementById('createTestButton').addEventListener('click', function()
     // Start processing the queue
     processQueue();
 
-    // Insert 'save' and 'check answers' buttons
-    var checkAnswersButton = document.createElement('button');
+});
+
+
+// Define a function to create the buttons
+function createCheckAnswersButton(outputDiv, user_guesses) {
+    // Create a div element to contain the buttons
+    let buttonsDiv = document.createElement('div');
+    outputDiv.appendChild(buttonsDiv);
+
+    console.log(user_guesses)
+
+    // Create the 'check answers' button
+    let checkAnswersButton = document.createElement('button');
     checkAnswersButton.type = 'button';
     checkAnswersButton.className = 'btn btn-secondary m-2';
     checkAnswersButton.textContent = 'Check Answers';
-    containerDiv.appendChild(checkAnswersButton);
+    buttonsDiv.appendChild(checkAnswersButton);
 
-    var saveButton = document.createElement('button');
-    saveButton.type = 'button';
-    saveButton.className = 'btn btn-secondary m-2';
-    saveButton.textContent = 'Save test';
-    containerDiv.appendChild(saveButton);
+    // In the event listener for the 'check answers' button, remove the visually-hidden class from all the answerP elements
+    checkAnswersButton.addEventListener('click', function() {
+        // Make the 'check answers' button not clickable anymore
+        checkAnswersButton.classList.add('disabled');
 
-});
+        // Show correct answers
+        let answerPs = outputDiv.querySelectorAll('p.visually-hidden');
+        for (let i = 0; i < answerPs.length; i++) {
+            answerPs[i].classList.remove('visually-hidden');
+        }
+
+        // Add the disabled attribute to all the answer/submit buttons
+        let buttons = outputDiv.querySelectorAll('button');
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].setAttribute('disabled', 'disabled');
+        }
+
+        // Create the 'save test' button
+        let saveButton = document.createElement('button');
+        saveButton.type = 'button';
+        saveButton.className = 'btn btn-secondary m-2';
+        saveButton.textContent = 'Save test';
+        buttonsDiv.appendChild(saveButton);
+
+        // In the event listener for the 'save test' button, call the save_test_in_database function using fetch
+        saveButton.addEventListener('click', function() {
+            // Call the save_test_in_database function using fetch
+            fetch('/save_test_in_database', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user_guesses)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // The test was successfully saved
+                    saveButton.textContent='Test saved!';
+                    saveButton.className = 'btn btn-success m-2';
+                } else {
+                    // There was an error while saving the test
+                    saveButton.textContent='Error! test not saved';
+                    saveButton.className = 'btn btn-danger m-2';
+                    console.error(data.error);
+                }
+                saveButton.classList.add('disabled');
+            });
+        });
+
+    });
+}
+
+function errorMessage() {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-danger alert-dismissible fade show mx-3';
+    alert.setAttribute('role', 'alert');
+
+    const text = document.createTextNode('Please add at least one note first.');
+    alert.appendChild(text);
+
+    const button = document.createElement('button');
+    button.className = 'btn-close';
+    button.setAttribute('type', 'button');
+    button.setAttribute('data-bs-dismiss', 'alert');
+    button.setAttribute('aria-label', 'Close');
+    alert.appendChild(button);
+
+    document.body.appendChild(alert);
+}

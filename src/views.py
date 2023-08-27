@@ -26,3 +26,13 @@ def quick_test():
 def personalized_test():
     print('\n\nPersonalized test route called')
     return render_template("personalized_test.html", user=current_user)
+
+
+# Route for viewing past tests
+@views.route('/history', methods=['GET', 'POST'])
+@login_required
+def history():
+    print('\n\nHistory route called')
+    print(current_user.tests)
+    # Render notes template on GET request
+    return render_template("history.html", user=current_user)
