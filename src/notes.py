@@ -1,10 +1,13 @@
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
+from pdf2image import convert_from_bytes
 from .models import Note
 from . import db
 import io
 import PyPDF2
 import json
+import pytesseract
+from PIL import Image
 
 
 notes = Blueprint('notes', __name__)
@@ -36,30 +39,39 @@ def create_note():
 
 
 # Helper function to extract content from file data
-def unpack_file(data):
+def unpack_file(data, file_type=None):
     # Convert data to byte string if necessary
     if isinstance(data, str):
         data = data.encode()
 
-    # Determine the file type based on its contents
-    file_type = None
-    if data.startswith(b'%PDF-'):
-        file_type = 'pdf'
-    else:
-        file_type = 'txt'
+    # Determine the file type based on its contents, the provided file_type parameter, or the file extension
+    if not file_type:
+        if data.startswith(b'%PDF-'):
+            file_type = 'pdf'
+        else:
+            file_type = 'image'
 
     # Extract the content from the file based on its type
     content = None
     if file_type == 'pdf':
-        # Extract text from PDF file
+        # Extract text from PDF file using PyPDF2
         with io.BytesIO(data) as data_stream:
             reader = PyPDF2.PdfReader(data_stream)
             content = ''
             for page in range(len(reader.pages)):
                 content += reader.pages[page].extract_text()
-    elif file_type == 'txt':
-        # Extract text from txt file
-        content = data.decode()
+
+        # If PyPDF2 fails to extract any text, use Tesseract OCR to extract text from PDF file
+        if not content:
+            images = convert_from_bytes(data)
+            for image in images:
+                content += pytesseract.image_to_string(image)
+    elif file_type == 'image':
+        # Extract text from image using Tesseract OCR
+        with io.BytesIO(data) as data_stream:
+            image = Image.open(data_stream)
+            content = pytesseract.image_to_string(image)
+
     return content
 
 
