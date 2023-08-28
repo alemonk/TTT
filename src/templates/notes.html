@@ -36,22 +36,26 @@
 
 <br />
 
-<ul class="list-group list-group-flush" id="notes">
-    {% for note in user.notes %}
-    <li class="list-group-item rounded-3 mb-3 bg-primary-subtle">
-        <div class="note-title bg-light my-1" onclick="toggleNoteContent(this, {{ note.id }})">
-            {{ note.title }}
+<div class="row row-cols-1 row-cols-md-4 g-4" id="notes">
+    {% for note in user.notes|reverse %}
+    <div class="col">
+        <div class="card h-100 bg-primary-subtle rounded-5 p-3">
+            <div class="card-body">
+                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            </div>
+            <div class="note-title bg-light my-1" onclick="toggleNoteContent(this, {{ note.id }})">
+                {{ note.title }}
+            </div>
+            <div class="note-content" style="display: none;">
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-close mt-2" aria-label="Close" onclick="deleteNote({{ note.id }})">
+                </button>
+            </div>
         </div>
-        <div class="note-content" style="display: none;">
-        </div>
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-close mt-2" aria-label="Close" onclick="deleteNote({{ note.id }})">
-            </button>
-        </div>
-
-    </li>
+    </div>
     {% endfor %}
-</ul>
+</div>
 
 {% endblock %}
 

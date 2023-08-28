@@ -153,7 +153,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                             submitButton.addEventListener('click', (function(containerDiv) {
                                 return function() {
                                     // Change text on the button to show that the answer was correctly saved
-                                    submitButton.textContent='Answer saved!';
+                                    this.textContent='Answer saved!';
 
                                     var guess = textarea.value;
                                     var question = data.question;

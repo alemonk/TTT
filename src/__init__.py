@@ -18,12 +18,14 @@ def create_app():
     from .questions import questions
     from .notes import notes
     from .settings import settings
+    from .history import history
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(questions, url_prefix='/')
     app.register_blueprint(notes, url_prefix='/')
     app.register_blueprint(settings, url_prefix='/')
+    app.register_blueprint(history, url_prefix='/')
 
     from .models import User, Note
 

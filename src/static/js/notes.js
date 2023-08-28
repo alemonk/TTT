@@ -21,11 +21,17 @@ function createNote(title, data) {
     method: 'POST',
     body: formData
   }).then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      }
+    });
 }
 
 
 function toggleNoteContent(element, noteId) {
   const noteContent = element.nextElementSibling;
+  console.log('test: ', noteContent.style.display)
   if (noteContent.style.display === 'none') {
     const formData = new FormData();
     formData.append('note_id', noteId);
