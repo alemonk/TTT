@@ -358,39 +358,43 @@ function createCheckAnswersButton(outputDiv, user_guesses) {
             buttons[i].setAttribute('disabled', 'disabled');
         }
 
-        // Create the 'save test' button
-        let saveButton = document.createElement('button');
-        saveButton.type = 'button';
-        saveButton.className = 'btn btn-secondary m-2';
-        saveButton.textContent = 'Save test';
-        buttonsDiv.appendChild(saveButton);
+        // Call the createSaveTestButton function to create the button
+        createSaveTestButton(buttonsDiv, user_guesses);
+    });
+}
 
-        // In the event listener for the 'save test' button, call the save_test_in_database function using fetch
-        saveButton.addEventListener('click', function() {
-            // Call the save_test_in_database function using fetch
-            fetch('/save_test_in_database', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(user_guesses)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // The test was successfully saved
-                    saveButton.textContent='Test saved!';
-                    saveButton.className = 'btn btn-success m-2';
-                } else {
-                    // There was an error while saving the test
-                    saveButton.textContent='Error! test not saved';
-                    saveButton.className = 'btn btn-danger m-2';
-                    console.error(data.error);
-                }
-                saveButton.classList.add('disabled');
-            });
+function createSaveTestButton(buttonsDiv, user_guesses) {
+    // Create the 'save test' button
+    let saveButton = document.createElement('button');
+    saveButton.type = 'button';
+    saveButton.className = 'btn btn-secondary m-2';
+    saveButton.textContent = 'Save test';
+    buttonsDiv.appendChild(saveButton);
+
+    // In the event listener for the 'save test' button, call the save_test_in_database function using fetch
+    saveButton.addEventListener('click', function() {
+        // Call the save_test_in_database function using fetch
+        fetch('/save_test_in_database', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user_guesses)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // The test was successfully saved
+                saveButton.textContent='Test saved!';
+                saveButton.className = 'btn btn-success m-2';
+            } else {
+                // There was an error while saving the test
+                saveButton.textContent='Error! test not saved';
+                saveButton.className = 'btn btn-danger m-2';
+                console.error(data.error);
+            }
+            saveButton.classList.add('disabled');
         });
-
     });
 }
 

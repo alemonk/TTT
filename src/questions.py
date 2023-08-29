@@ -99,11 +99,38 @@ def normalize_answer(type_of_question, answer):
     return answer
 
 
+def remove_duplicate_questions(user_guesses):
+    # Create a dictionary to store the last guess for each question
+    last_guesses = {}
+    # Iterate over the user_guesses array
+    for obj in user_guesses:
+        # Access the properties of each object in the user_guesses array
+        question = obj['question']
+        guess = obj['guess']
+        type_of_question = obj['type_of_question']
+        correct_answer = obj['answer']
+        # Store the last guess for each question in the dictionary
+        last_guesses[question] = {'guess': guess, 'type_of_question': type_of_question, 'answer': correct_answer}
+    # Create a new list to store the data
+    new_user_guesses = []
+    # Iterate over the items in the last_guesses dictionary
+    for question, data in last_guesses.items():
+        # Create a new object with the data
+        new_obj = {'question': question, 'guess': data['guess'], 'type_of_question': data['type_of_question'], 'answer': data['answer']}
+        # Add the new object to the new_user_guesses list
+        new_user_guesses.append(new_obj)
+    # Return the new_user_guesses list
+    return new_user_guesses
+
+
 @questions.route('/save_test_in_database', methods=['POST'])
 def save_test_in_database():
     try:
         # Get the data sent from the client
         user_guesses = request.get_json()
+
+        # Call the remove_duplicate_questions function to get a new list that only contains the last guess for each question
+        user_guesses = remove_duplicate_questions(user_guesses)
 
         # Create lists to store the data
         generated_questions = []

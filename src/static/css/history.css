@@ -1,11 +1,11 @@
-.test-title {
+.test-element {
   border: 2px solid transparent;
   padding: 5px;
   cursor: pointer;
   border-radius: 5px;
 }
 
-.test-title:hover {
+.test-element:hover {
   border-color: #007bff;
   background-color: #f0f0f0;
 }
@@ -17,6 +17,22 @@
 .table td,
 .table th {
   padding: 8px;
+}
+
+/* Set the width of the first column (Question) to 40% */
+.table td:nth-child(1),
+.table th:nth-child(1) {
+  width: 40%;
+}
+/* Set the width of the second column (Answer) to 40% */
+.table td:nth-child(2),
+.table th:nth-child(2) {
+  width: 45%;
+}
+/* Set the width of the third column (Your guess) to 10% */
+.table td:nth-child(3),
+.table th:nth-child(3) {
+  width: 15%;
 }
 
 .table tr:nth-child(even) {

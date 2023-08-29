@@ -22,7 +22,9 @@ function createNote(title, data) {
     body: formData
   }).then(response => response.json())
     .then(data => {
+      console.log('fin qui tutto bene')
       if (data.success) {
+        console.log('fin qui tutto BENISSIMO')
         location.reload();
       }
     });

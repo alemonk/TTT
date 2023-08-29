@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, flash
 from flask_login import login_required, current_user
 from pdf2image import convert_from_bytes
 from .models import Note
@@ -32,7 +32,8 @@ def create_note():
         db.session.commit()
 
         print('\n\nNote: ' + title + ' added!')
-        return jsonify({'id': new_note.id, 'title': title})
+        flash('Note(s) successfully added!', category='success')
+        return jsonify({'success': True})
 
     # Render notes template on GET request
     return render_template("notes.html", user=current_user)
@@ -40,9 +41,6 @@ def create_note():
 
 # Helper function to extract content from file data
 def unpack_file(data, file_type=None):
-    # Convert data to byte string if necessary
-    if isinstance(data, str):
-        data = data.encode()
 
     # Determine the file type based on its contents, the provided file_type parameter, or the file extension
     if not file_type:
@@ -60,12 +58,12 @@ def unpack_file(data, file_type=None):
             content = ''
             for page in range(len(reader.pages)):
                 content += reader.pages[page].extract_text()
+        # # If PyPDF2 fails to extract any text, use Tesseract OCR to extract text from PDF file
+        # if not content:
+        #    images = convert_from_bytes(data)
+        #    for image in images:
+        #        content += pytesseract.image_to_string(image)
 
-        # If PyPDF2 fails to extract any text, use Tesseract OCR to extract text from PDF file
-        if not content:
-            images = convert_from_bytes(data)
-            for image in images:
-                content += pytesseract.image_to_string(image)
     elif file_type == 'image':
         # Extract text from image using Tesseract OCR
         with io.BytesIO(data) as data_stream:
@@ -108,6 +106,7 @@ def delete_note():
         # Delete note from database and return success response
         db.session.delete(note)
         db.session.commit()
+        flash('Note successfully deleted!', category='success')
         return jsonify({'success': True})
 
     # Return failure response if note does not exist or does not belong to current user

@@ -55,4 +55,4 @@ def get_test_data():
         return jsonify({'error': 'Test not found'})
 
     # Return test questions and answers as JSON response
-    return jsonify({'questions': test.questions, 'answers': test.answers})
+    return jsonify({'questions': test.questions, 'answers': test.answers, 'guesses': test.guesses})
