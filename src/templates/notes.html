@@ -35,21 +35,51 @@
 
 <br />
 
-<div class="row row-cols-1 row-cols-md-4 g-4" id="notes">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="notes">
     {% for note in user.notes|reverse %}
     <div class="col">
         <div class="card h-100 bg-primary-subtle rounded-5 p-3">
-            <div class="card-body">
-                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            </div>
+            <!--
+            with  onclick="toggleNoteContent(this, {{ note.id }})"
             <div class="note-title bg-light my-1" onclick="toggleNoteContent(this, {{ note.id }})">
                 {{ note.title }}
             </div>
+            -->
+            <div class="note-title p-2 bg-light mb-2">
+                {{ note.title }}
+            </div>
+
             <div class="note-content" style="display: none;">
             </div>
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-close mt-2" aria-label="Close" onclick="deleteNote({{ note.id }})">
-                </button>
+            <div class="icon-container d-flex justify-content-center align-items-center">
+                <!-- quick test -->
+                <div class="dropdown">
+                    <div
+                            class="note-element bg-light d-flex justify-content-end ms-2"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        <i class="bi bi-card-list" aria-label="Close"></i>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="quick_test" onclick="quickTest()">Create quick test</a></li>
+                    </ul>
+                </div>
+
+                <!-- more options -->
+                <div class="dropdown">
+                    <div
+                            class="note-element bg-light d-flex justify-content-end ms-2"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        <i class="bi bi-three-dots-vertical" aria-label="Close"></i>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Rename note</a></li>
+                        <li><a class="dropdown-item" onclick="deleteNote({{ note.id }})" href="#">Delete note</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

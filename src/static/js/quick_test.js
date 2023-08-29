@@ -21,21 +21,24 @@ document.getElementById('createTestButton').addEventListener('click', function()
     clearOutput();
 
     fetch('/get_preferences', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({type_of_question: 'closed question'})
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
     .then(response => response.json())
     .then(data => {
+        // Notes to use
+        var selectedNotes = Array.from(document.querySelectorAll('.form-check-input:checked'))
+            .map(checkbox => checkbox.nextElementSibling.textContent.trim());
 
+        console.log(selectedNotes);
+
+        // Number of questions for each type
         let numOpenQuestions = data.num_open_q;
         let numTrueFalseQuestions = data.num_tf_q;
         let numClosedQuestions = data.num_closed_q;
-
         let numQuestions = numOpenQuestions + numTrueFalseQuestions + numClosedQuestions;
-
         let questionTypes = ['open question', 'true or false', 'closed question'];
         let numQuestionTypesPerType = [numOpenQuestions, numTrueFalseQuestions, numClosedQuestions];
 
@@ -103,13 +106,19 @@ document.getElementById('createTestButton').addEventListener('click', function()
             // Get the first item from the queue
             var item = queue.dequeue();
 
+            // Process the next item in the queue
+            // BE CAREFUL, IT SENDS ALL THE REQUESTS AT THE SAME TIME
+            // Comment 'processQueue2' before uncommenting this one, and vice versa
+            // This is 'processQueue1'
+            processQueue();
+
             // Send a request to the /question endpoint with the item data
             fetch('/question', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ type_of_question: item.type_of_question })
+                body: JSON.stringify({ type_of_question: item.type_of_question, selected_notes: selectedNotes })
             })
                 .then(response => response.json())
                 .then(data => {
@@ -157,6 +166,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                 // Add an event listener to the submit button
                                 submitButton.addEventListener('click', (function(containerDiv) {
                                     return function() {
+                                        submitButton.className='btn btn-primary my-2';
                                         var guess = textarea.value;
                                         var question = data.question;
                                         var answer = data.answer;
@@ -211,9 +221,9 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                                     answerP.textContent = data.response;
                                                     containerDiv.appendChild(answerP);
                                                     if (data.response.startsWith("Correct")) {
-                                                        this.style.backgroundColor = '#28a745';
+                                                        this.className = 'btn btn-success my-2';
                                                     } else {
-                                                        this.style.backgroundColor = '#dc3545';
+                                                        this.className = 'btn btn-danger my-2';
                                                     }
                                                 });
                                         });
@@ -258,9 +268,9 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                                     answerP.textContent = data.response;
                                                     containerDiv.appendChild(answerP);
                                                     if (data.response.startsWith("Correct")) {
-                                                        this.style.backgroundColor = '#28a745';
+                                                        this.className = 'btn btn-success my-2';
                                                     } else {
-                                                        this.style.backgroundColor = '#dc3545';
+                                                        this.className = 'btn btn-danger my-2';
                                                     }
                                                 });
                                         });
@@ -271,7 +281,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                     }
 
                     // Process the next item in the queue
-                    processQueue();
+                    //processQueue();
                 });
         }
 
@@ -291,6 +301,8 @@ document.getElementById('createTestButton').addEventListener('click', function()
         }
 
         // Start processing the queue
+        // Comment 'processQueue1' before uncommenting this one, and vice versa
+        // This is 'processQueue2'
         processQueue();
 
     });

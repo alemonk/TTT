@@ -12,8 +12,16 @@ questions = Blueprint('questions', __name__)
 @questions.route('/question', methods=['POST'])
 def get_question():
     type_of_question = request.json['type_of_question']
+    selected_notes = request.json.get('selected_notes', [])
 
-    random_note = Note.query.filter_by(user_id=current_user.id).order_by(func.random()).first()
+    print(selected_notes)
+
+    if selected_notes:
+        # Select a random note from the filtered results
+        random_note = Note.query.filter(Note.user_id == current_user.id, Note.title.in_(selected_notes)).order_by(func.random()).first()
+    else:
+        # Select a random note from all the user's notes
+        random_note = Note.query.filter_by(user_id=current_user.id).order_by(func.random()).first()
 
     question, answer = create_random_question(random_note.content,
                                               type_of_question=type_of_question)

@@ -32,7 +32,7 @@ def create_note():
         db.session.commit()
 
         print('\n\nNote: ' + title + ' added!')
-        flash('Note(s) successfully added!', category='success')
+        flash('Note successfully added!', category='success')
         return jsonify({'success': True})
 
     # Render notes template on GET request

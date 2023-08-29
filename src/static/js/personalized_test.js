@@ -95,6 +95,12 @@ document.getElementById('createTestButton').addEventListener('click', function()
         // Get the first item from the queue
         var item = queue.dequeue();
 
+        // Process the next item in the queue
+        // BE CAREFUL, IT SENDS ALL THE REQUESTS AT THE SAME TIME
+        // Comment 'processQueue2' before uncommenting this one, and vice versa
+        // This is 'processQueue1'
+        // processQueue();
+
         // Send a request to the /question endpoint with the item data
         fetch('/question', {
             method: 'POST',
@@ -299,6 +305,8 @@ document.getElementById('createTestButton').addEventListener('click', function()
                 }
 
                 // Process the next item in the queue
+                // Comment 'processQueue1' before uncommenting this one, and vice versa
+                // This is 'processQueue2'
                 processQueue();
 
             });

@@ -41,8 +41,4 @@ def get_preferences():
     num_tf_q = user.true_or_false_pref
     num_closed_q = user.closed_question_pref
 
-    print(num_closed_q)
-    print(num_tf_q)
-    print(num_closed_q)
-
     return jsonify({'num_open_q': num_open_q, 'num_tf_q': num_tf_q, 'num_closed_q': num_closed_q})
