@@ -44,11 +44,11 @@
                     <div class="test-element bg-light my-1 flex-grow-1 ms-2">
                         <i class="bi bi-pen-fill"></i>
                     </div>
-                    <div class="test-element bg-light my-1 flex-grow-1 ms-2">
-                        <i class="bi bi-file-earmark-check-fill" aria-label="Close" onclick="toggleAnswersAndGuesses()"></i>
+                    <div class="test-element bg-light my-1 flex-grow-1 ms-2" onclick="toggleAnswersAndGuesses()">
+                        <i class="bi bi-eye-fill" aria-label="Close"></i>
                     </div>
-                    <div class="test-element bg-light my-1 flex-grow-1 ms-2">
-                        <i class="bi bi-trash-fill" aria-label="Close" onclick="deleteTest({{ test.id }})"></i>
+                    <div class="test-element bg-light my-1 flex-grow-1 ms-2" onclick="deleteTest({{ test.id }})">
+                        <i class="bi bi-trash-fill" aria-label="Close"></i>
                     </div>
                 </div>
 

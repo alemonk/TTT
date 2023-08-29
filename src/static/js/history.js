@@ -21,12 +21,12 @@ function toggleAnswersAndGuesses() {
     // Loop through the answer and guess cells
     for (let i = 0; i < answerCells.length; i++) {
         // Toggle the visibility of the answer and guess cells
-        if (answerCells[i].style.display === 'none') {
-            answerCells[i].style.display = 'table-cell';
-            guessCells[i].style.display = 'table-cell';
-        } else {
+        if (answerCells[i].style.display === 'table-cell') {
             answerCells[i].style.display = 'none';
             guessCells[i].style.display = 'none';
+        } else {
+            answerCells[i].style.display = 'table-cell';
+            guessCells[i].style.display = 'table-cell';
         }
     }
 }
