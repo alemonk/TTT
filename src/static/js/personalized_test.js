@@ -3,19 +3,6 @@ function clearOutput() {
     document.getElementById('output').innerHTML = '';
 }
 
-// Create answer buttons and append them to the container div element
-function createAnswerButtons(answers, containerDiv) {
-    for (var i = 0; i < answers.length; i++) {
-        var answerButton = document.createElement('button');
-        answerButton.type = 'button';
-        answerButton.className = 'btn btn-secondary my-2';
-        answerButton.style.marginRight = '5px';
-        answerButton.textContent = answers[i].label;
-        answerButton.style.backgroundColor = answers[i].color;
-        containerDiv.appendChild(answerButton);
-    }
-}
-
 // Add an event listener to the createTestButton element
 document.getElementById('createTestButton').addEventListener('click', function() {
     clearOutput();
@@ -85,6 +72,8 @@ document.getElementById('createTestButton').addEventListener('click', function()
     // Create a global queue instance
     var queue = new Queue();
 
+    createCancelButton(queue);
+
     // Create a function to process the queue
     function processQueue() {
         // Check if the queue is empty
@@ -124,7 +113,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                 generated_questions.push(data);
 
                 // Check if all questions have been generated
-                if (numQuestionTypesPerType.reduce((a, b) => parseInt(a) + parseInt(b), 0) == generated_questions.length) {
+                if (queue.isEmpty()) {
                     // All questions have been generated, so display them on the page
                     for (let k=0; k < generated_questions.length; k++) {
                         let data=generated_questions[k];
@@ -422,4 +411,35 @@ function errorMessage() {
     alert.appendChild(button);
 
     document.body.appendChild(alert);
+}
+
+// Create answer buttons and append them to the container div element
+function createAnswerButtons(answers, containerDiv) {
+    for (var i = 0; i < answers.length; i++) {
+        var answerButton = document.createElement('button');
+        answerButton.type = 'button';
+        answerButton.className = 'btn btn-secondary my-2';
+        answerButton.style.marginRight = '5px';
+        answerButton.textContent = answers[i].label;
+        answerButton.style.backgroundColor = answers[i].color;
+        containerDiv.appendChild(answerButton);
+    }
+}
+
+// Create the 'cancel' button
+function createCancelButton(queue) {
+    // Create the 'cancel' button
+    let cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.className = 'btn btn-danger m-2';
+    cancelButton.textContent = 'Cancel';
+    crateTestDiv.appendChild(cancelButton);
+
+    // In the event listener for the 'cancel' button, remove all elements from the queue
+    cancelButton.addEventListener('click', function() {
+        while (!queue.isEmpty()) {
+            queue.dequeue();
+        }
+        console.log('Queue emptied');
+    });
 }

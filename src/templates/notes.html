@@ -21,70 +21,107 @@
 <h3 align="center">Notes</h3>
 <br />
 
-<div class="mb-3">
-    <input type="file" id="formFileMultiple" multiple style="display: none;" onchange="handleFiles(this.files)">
-    <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="document.getElementById('formFileMultiple').click()"
-    >
-        Choose Files
-    </button>
-    <br />
-</div>
+<button
+        type="button"
+        class="btn btn-secondary mb-3"
+        onclick="createFolder()"
+>
+    Create Folder
+</button>
 
 <br />
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="notes">
-    {% for note in user.notes|reverse %}
-    <div class="col">
-        <div class="card h-100 bg-primary-subtle rounded-5 p-3">
-            <!--
-            with  onclick="toggleNoteContent(this, {{ note.id }})"
-            <div class="note-title bg-light my-1" onclick="toggleNoteContent(this, {{ note.id }})">
-                {{ note.title }}
-            </div>
-            -->
-            <div class="note-title p-2 bg-light mb-2">
-                {{ note.title }}
-            </div>
+<!-- Display list of folders -->
+{% for folder in user.folders %}
 
-            <div class="note-content" style="display: none;">
-            </div>
-            <div class="icon-container d-flex justify-content-center align-items-center">
-                <!-- quick test -->
-                <div class="dropdown">
-                    <div
-                            class="note-element bg-light d-flex justify-content-end ms-2"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        <i class="bi bi-card-list" aria-label="Close"></i>
-                    </div>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="quick_test" onclick="quickTest()">Create quick test</a></li>
-                    </ul>
+<div class="d-flex">
+    <div
+        class="folder-element bg-primary-subtle p-2 my-2 flex-grow-1 rounded-3 shadow-sm"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseFolder{{ folder.id }}"
+        aria-expanded="false"
+        aria-controls="collapseFolder{{ folder.id }}"
+    >
+        {{ folder.title }}
+    </div>
+
+    <!-- Wrap the two <i> elements and the switch button in a container with the flex-grow-1 class -->
+    <div class="icon-container d-flex justify-content-center align-items-center">
+        <div class="folder-element bg-primary-subtle my-1 flex-grow-1 ms-2 p-2 rounded-3 shadow-sm">
+            <i class="bi bi-pen-fill"></i>
+        </div>
+        <div class="folder-element bg-primary-subtle my-1 flex-grow-1 ms-2 p-2 rounded-3 shadow-sm" onclick="deleteFolder({{ folder.id }})">
+            <i class="bi bi-trash-fill" aria-label="Close"></i>
+        </div>
+    </div>
+</div>
+
+<div class="collapse" id="collapseFolder{{ folder.id }}">
+    <!-- Display notes associated with the current folder -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="notes">
+        {% for note in folder.notes|reverse %}
+        <div class="col">
+            <div class="card bg-primary-subtle rounded-5 p-3 shadow">
+                <img
+                    src="{{ url_for('static', filename='icons/TTT_icon.jpg') }}"
+                    class="card-img-top rounded-3 mb-2"
+                    alt="..."
+                >
+
+                <div class="rounded-3 p-2 bg-light mb-2">
+                    {{ note.title }}
                 </div>
 
-                <!-- more options -->
-                <div class="dropdown">
-                    <div
-                            class="note-element bg-light d-flex justify-content-end ms-2"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        <i class="bi bi-three-dots-vertical" aria-label="Close"></i>
+                <div class="icon-container d-flex justify-content-center align-items-center">
+                    <!-- quick test -->
+                    <div class="dropdown">
+                        <div
+                                class="note-element bg-light d-flex justify-content-end ms-2"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            <i class="bi bi-card-list" aria-label="Close"></i>
+                        </div>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="quick_test" onclick="quickTest()">Create quick test</a></li>
+                        </ul>
                     </div>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Rename note</a></li>
-                        <li><a class="dropdown-item" onclick="deleteNote({{ note.id }})" href="#">Delete note</a></li>
-                    </ul>
+
+                    <!-- more options -->
+                    <div class="dropdown">
+                        <div
+                                class="note-element bg-light d-flex justify-content-end ms-2"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            <i class="bi bi-three-dots-vertical" aria-label="Close"></i>
+                        </div>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Rename note</a></li>
+                            <li><a class="dropdown-item" onclick="deleteNote({{ note.id }})" href="#">Delete note</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+
+    <!-- Add "Add File" button to each folder -->
+    <div class="mb-3">
+        <input type="file" id="formFileMultiple{{ folder.id }}" multiple style="display: none;" onchange="handleFiles(this.files, {{ folder.id }})">
+        <button
+                type="button"
+                class="btn btn-secondary my-4"
+                onclick="document.getElementById('formFileMultiple{{ folder.id }}').click()"
+        >
+            Add file
+        </button>
+        <br />
+    </div>
 </div>
+
+{% endfor %}
 
 {% endblock %}
 

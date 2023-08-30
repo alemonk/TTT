@@ -12,6 +12,15 @@ class Note(db.Model):
     content = db.Column(db.String(10000))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'))
+
+
+# The Note class represents a user's note in the database.
+class Folder(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    notes = db.relationship('Note', backref='folder')
 
 
 # The Test class represents a user's saved tests in the database.
@@ -41,3 +50,4 @@ class User(db.Model, UserMixin):
     closed_question_pref = db.Column(db.Integer)
     notes = db.relationship('Note')
     tests = db.relationship('Test')
+    folders = db.relationship('Folder')

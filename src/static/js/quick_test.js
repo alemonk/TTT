@@ -96,6 +96,8 @@ document.getElementById('createTestButton').addEventListener('click', function()
         // Create a global queue instance
         var queue = new Queue();
 
+        createCancelButton(queue)
+
         // Create a function to process the queue
         function processQueue() {
             // Check if the queue is empty
@@ -308,3 +310,22 @@ document.getElementById('createTestButton').addEventListener('click', function()
     });
 
 });
+
+
+// Create the 'cancel' button
+function createCancelButton(queue) {
+    // Create the 'cancel' button
+    let cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.className = 'btn btn-danger m-2';
+    cancelButton.textContent = 'Cancel';
+    crateTestDiv.appendChild(cancelButton);
+
+    // In the event listener for the 'cancel' button, remove all elements from the queue
+    cancelButton.addEventListener('click', function() {
+        while (!queue.isEmpty()) {
+            queue.dequeue();
+        }
+        console.log('Queue emptied');
+    });
+}

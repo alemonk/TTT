@@ -1,32 +1,50 @@
-function handleFiles(files) {
+function handleFiles(files, folderId) {
   for (const file of files) {
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
     reader.onload = () => {
       const title = file.name;
       const data = new Uint8Array(reader.result);
-      createNote(title, data);
+      createNote(title, data, folderId);
     };
   }
 }
 
 
-function createNote(title, data) {
+function createNote(title, data, folderId) {
   const blob = new Blob([data], { type: 'application/octet-stream' });
   const formData = new FormData();
   formData.append('title', title);
   formData.append('data', blob);
+  formData.append('folder_id', folderId);
 
   fetch('/notes', {
     method: 'POST',
     body: formData
   }).then(response => response.json())
     .then(data => {
-      console.log('fin qui tutto bene')
       if (data.success) {
-        console.log('fin qui tutto BENISSIMO')
         location.reload();
       }
+    });
+}
+
+
+function createFolder() {
+    // Prompt the user to enter the title of the new folder
+    let folderTitle = prompt("Please enter the title of the new folder:");
+
+    fetch('/folders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title: folderTitle })
+    }).then(response => response.json())
+    .then(data => {
+        if (data.success) {
+        location.reload();
+        }
     });
 }
 
@@ -59,6 +77,22 @@ function deleteNote(noteId) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ noteId })
+  }).then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      }
+    });
+}
+
+
+function deleteFolder(folderId) {
+  fetch('/delete-folder', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ folderId })
   }).then(response => response.json())
     .then(data => {
       if (data.success) {

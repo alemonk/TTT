@@ -14,12 +14,12 @@
         <title>{% block title %}Home{% endblock %}</title>
     </head>
     <body class ="bg-light">
-        <nav class="navbar navbar-expand-lg bg-primary-subtle mb-4">
+        <nav class="navbar navbar-expand-lg bg-primary-subtle mb-4 shadow">
           <div class="container-fluid ms-auto me-auto">
             <a href="/home">
               <img
                     src="{{ url_for('static', filename='icons/TTT_icon.jpg') }}"
-                    class="img-thumbnail me-2"
+                    class="img-thumbnail me-2 shadow-sm"
                     style="height: 60px;"
                     alt="..."
               />
@@ -52,13 +52,13 @@
         'error' %}
         <div class="alert alert-danger alert-dismissible fade show mx-3" role="alert">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close">
             </button>
         </div>
         {% else %}
         <div class="alert alert-success alert-dismissible fade show mx-3" role="alert">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close">
             </button>
         </div>
         {% endif %} {% endfor %} {% endif %} {% endwith %}

@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, flash
 from flask_login import login_required, current_user
-from pdf2image import convert_from_bytes
-from .models import Note
+from .models import Note, Folder
 from . import db
 import io
 import PyPDF2
@@ -22,12 +21,13 @@ def create_note():
         # Get note title and file data from form
         title = request.form.get('title')
         data = request.files['data'].read()
+        folder_id = request.form.get('folder_id')
 
         # Extract content from file data
         content = unpack_file(data)
 
         # Create new note object and add it to the database
-        new_note = Note(title=title, data=data, content=content, user_id=current_user.id)
+        new_note = Note(title=title, data=data, content=content, user_id=current_user.id, folder_id=folder_id)
         db.session.add(new_note)
         db.session.commit()
 
@@ -110,4 +110,50 @@ def delete_note():
         return jsonify({'success': True})
 
     # Return failure response if note does not exist or does not belong to current user
+    return jsonify({'success': False})
+
+
+# Route for creating a folder
+@notes.route('/folders', methods=['POST'])
+@login_required
+def create_folder():
+    print('\n\nFolders route called')
+
+    # Get folder title and file data from form
+    data = request.get_json()
+    folder_title = data['title']
+
+    # Create new note object and add it to the database
+    new_folder = Folder(title=folder_title, user_id=current_user.id)
+    db.session.add(new_folder)
+    db.session.commit()
+
+    print('\n\nNote: ' + folder_title + ' added!')
+    flash('Folder successfully created!', category='success')
+    return jsonify({'success': True})
+
+
+@notes.route('/delete-folder', methods=['POST'])
+@login_required
+def delete_folder():
+    # Get folder ID from request data
+    folder_id = json.loads(request.data)['folderId']
+
+    # Query database for folder with given ID
+    folder = Folder.query.get(folder_id)
+
+    # Check if folder exists and belongs to current user
+    if folder and folder.user_id == current_user.id:
+        # Delete all notes associated with the folder
+        for note in folder.notes:
+            db.session.delete(note)
+
+        # Delete the folder from the database
+        db.session.delete(folder)
+        db.session.commit()
+
+        flash('Folder successfully deleted!', category='success')
+        return jsonify({'success': True})
+
+    # Return failure response if folder does not exist or does not belong to current user
     return jsonify({'success': False})

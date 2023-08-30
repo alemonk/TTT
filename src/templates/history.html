@@ -25,38 +25,38 @@
 <ul class="list-group list-group-flush" id="tests">
     {% if user.tests|length == 0 %}
         <li class="list-group-item bg-light">
-            <div class="bg-warning-subtle p-2 rounded-3" style="display: inline-block;">
-                No tests saved.
+            <div class="bg-warning p-2 rounded-3 shadow-sm" style="display: inline-block;">
+                No saved tests.
             </div>
         </li>
     {% else %}
         {% for test in user.tests|reverse %}
-            <li class="list-group-item rounded-3 mb-3 bg-primary-subtle">
-            <!-- Use a div element with the d-flex class to create a flexbox container -->
-            <div class="d-flex">
-                <!-- Use the flex-grow-1 class to make the test-element element grow and fill the available space -->
-                <div class="test-element bg-light my-1 flex-grow-1" onclick="showTest(this, {{ test.id }})">
-                    {{ test.title }}
-                </div>
+            <li class="list-group-item rounded-3 mb-3 bg-primary-subtle shadow">
+                <!-- Use a div element with the d-flex class to create a flexbox container -->
+                <div class="d-flex">
+                    <!-- Use the flex-grow-1 class to make the test-element element grow and fill the available space -->
+                    <div class="test-element bg-light my-1 flex-grow-1" onclick="showTest(this, {{ test.id }})">
+                        {{ test.title }}
+                    </div>
 
-                <!-- Wrap the two <i> elements and the switch button in a container with the flex-grow-1 class -->
-                <div class="icon-container d-flex justify-content-center align-items-center">
-                    <div class="test-element bg-light my-1 flex-grow-1 ms-2">
-                        <i class="bi bi-pen-fill"></i>
+                    <!-- Wrap the two <i> elements and the switch button in a container with the flex-grow-1 class -->
+                    <div class="icon-container d-flex justify-content-center align-items-center">
+                        <div class="test-element bg-light my-1 flex-grow-1 ms-2">
+                            <i class="bi bi-pen-fill"></i>
+                        </div>
+                        <div class="test-element bg-light my-1 flex-grow-1 ms-2" onclick="toggleAnswersAndGuesses()">
+                            <i class="bi bi-eye-fill" aria-label="Close"></i>
+                        </div>
+                        <div class="test-element bg-light my-1 flex-grow-1 ms-2" onclick="deleteTest({{ test.id }})">
+                            <i class="bi bi-trash-fill" aria-label="Close"></i>
+                        </div>
                     </div>
-                    <div class="test-element bg-light my-1 flex-grow-1 ms-2" onclick="toggleAnswersAndGuesses()">
-                        <i class="bi bi-eye-fill" aria-label="Close"></i>
-                    </div>
-                    <div class="test-element bg-light my-1 flex-grow-1 ms-2" onclick="deleteTest({{ test.id }})">
-                        <i class="bi bi-trash-fill" aria-label="Close"></i>
-                    </div>
-                </div>
 
-            </div>
-            <!-- This is where the test data will be displayed -->
-            <div class="test-data" style="display: none;" id="test-data-{{ test.id }}">
-            </div>
-          </li>
+                </div>
+                <!-- This is where the test data will be displayed -->
+                <div class="test-data" style="display: none;" id="test-data-{{ test.id }}">
+                </div>
+            </li>
         {% endfor %}
     {% endif %}
 </ul>

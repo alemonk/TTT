@@ -2,12 +2,42 @@
 {% block title %}Home{% endblock %}
 {% block content%}
 
-<h1 align="center">Home</h1>
+<div class="container px-4 py-5" id="custom-cards">
+    <h4 class="pb-2 border-bottom">Welcome, {{ user.username }}!</h4>
 
-{% if user.is_authenticated %}
-    <p>Welcome, {{ user.username }}!</p>
-{% else %}
-    <p>Please <a href="/login">login</a> or <a href="/sign-up">sign up</a> to access your notes.</p>
-{% endif %}
+    <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+
+      <div class="col">
+        <a href="/notes">
+          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg">
+            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Manage your notes</h3>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col">
+        <a href="/quick_test">
+          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg">
+            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Create a quick TTTest</h3>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col">
+        <a href="/personalized_test">
+          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg">
+            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Create a personalized TTTest</h3>
+            </div>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
 
 {% endblock %}
