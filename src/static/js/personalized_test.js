@@ -130,7 +130,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
                         if (data.type_of_question == 'open question') {
                             // Create a textarea element for user input
-                            var textarea = document.createElement('textarea');
+                            let textarea = document.createElement('textarea');
                             textarea.style.width = '100%';
                             textarea.style.boxSizing = 'border-box';
                             textarea.rows = 4;
@@ -155,7 +155,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                     var answer = data.answer;
 
                                     // Add guess and correct answer to the respective arrays
-                                    user_guesses.push({ question: data.question, guess: guess, answer: data.answer, type_of_question: data.type_of_question })
+                                    user_guesses.push({ question: question, guess: guess, answer: answer, type_of_question: data.type_of_question })
 
                                     fetch('/open_question_check_answer', {
                                         method: 'POST',

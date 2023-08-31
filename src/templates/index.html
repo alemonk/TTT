@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="hero-container m-1">
+    <img
+        src="{{ url_for('static', filename='images/note_writing.jpg') }}"
+        class="hero-background rounded-3"
+        alt="..."
+    />
+
+    <div class="hero-overlay rounded-3">
+        <div class="hero-text mb-4">
+            <h1>Learn quickly and achieve your goals</h1>
+            <p>Introducing the Online Quiz Maker: revolutionize learning with engaging quizzes that boost knowledge retention, critical thinking, and fun!</p>
+
+            <a href="/sign-up">
+                <button
+                    type="button"
+                    class="btn btn-light py-2 px-4"
+                    id="login-button"
+                >Join us</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

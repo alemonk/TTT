@@ -51,7 +51,7 @@ def create_random_question(note, type_of_question='true or false'):
                      "\nRemark 4: In the case of a 'true or false' question, the answer is TRUE/FALSE regardless of the language." + \
                      "\nRemark 5: The language MUST be the same as the note, which is not necessarily English." + \
                      "\nRemark 6: Give equal chance to the possible answers." + \
-                     "\nRemark 7: If you believe that you don't have enough information for generating a good quality question, output 'No enough info'"
+                     "\nRemark 7: If you believe that you don't have enough information for generating a good quality question, output 'Not enough info'"
 
     print('\n\nPrompt question: ' + prompt_question)
 

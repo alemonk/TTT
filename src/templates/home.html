@@ -1,43 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="{{ url_for('static', filename='css/home.css') }}"
+    >
+
+<head>
+    <title>Notes</title>
+</head>
+<body>
+
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content%}
 
-<div class="container px-4 py-5" id="custom-cards">
-    <h4 class="pb-2 border-bottom">Welcome, {{ user.username }}!</h4>
+<div class="notes-hero-container m-1 mt-2">
+    <a href="/notes">
+        <img
+            src="{{ url_for('static', filename='images/note_writing.jpg') }}"
+            class="notes-hero-background rounded-3"
+            alt="..."
+        />
 
-    <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
-
-      <div class="col">
-        <a href="/notes">
-          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg">
-            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Manage your notes</h3>
+        <div class="notes-hero-overlay rounded-3">
+            <div class="notes-hero-text mb-4">
+                <h1>Manage your notes</h1>
+                <p>Introducing the Online Quiz Maker: revolutionize learning with engaging quizzes that boost knowledge retention, critical thinking, and fun!</p>
             </div>
-          </div>
-        </a>
-      </div>
+        </div>
+    </a>
+</div>
 
-      <div class="col">
-        <a href="/quick_test">
-          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg">
-            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Create a quick TTTest</h3>
+<div class="notes-hero-container m-1">
+    <a href="/quick_test">
+        <img
+            src="{{ url_for('static', filename='images/relax.jpg') }}"
+            class="notes-hero-background rounded-3"
+            alt="..."
+        />
+
+        <div class="notes-hero-overlay rounded-3">
+            <div class="notes-hero-text mb-4">
+                <h1>Create a quick TTTest</h1>
+                <p>Introducing the Online Quiz Maker: revolutionize learning with engaging quizzes that boost knowledge retention, critical thinking, and fun!</p>
             </div>
-          </div>
-        </a>
-      </div>
+        </div>
+    </a>
+</div>
 
-      <div class="col">
-        <a href="/personalized_test">
-          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg">
-            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Create a personalized TTTest</h3>
+<div class="notes-hero-container m-1">
+    <a href="/personalized_test">
+        <img
+            src="{{ url_for('static', filename='images/note_writing.jpg') }}"
+            class="notes-hero-background rounded-3"
+            alt="..."
+        />
+
+        <div class="notes-hero-overlay rounded-3">
+            <div class="notes-hero-text mb-4">
+                <h1>Create a personalized TTTesst</h1>
+                <p>Introducing the Online Quiz Maker: revolutionize learning with engaging quizzes that boost knowledge retention, critical thinking, and fun!</p>
             </div>
-          </div>
-        </a>
-      </div>
-
-    </div>
-  </div>
+        </div>
+    </a>
+</div>
 
 {% endblock %}
+
+</body>
+</html>

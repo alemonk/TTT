@@ -14,9 +14,9 @@
         <title>{% block title %}Home{% endblock %}</title>
     </head>
     <body class ="bg-light">
-        <nav class="navbar navbar-expand-lg bg-primary-subtle mb-4 shadow">
-          <div class="container-fluid ms-auto me-auto">
-            <a href="/home">
+        <nav class="navbar navbar-expand-lg m-2">
+          <div class="container-fluid">
+            <a href="/">
               <img
                     src="{{ url_for('static', filename='icons/TTT_icon.jpg') }}"
                     class="img-thumbnail me-2 shadow-sm"
@@ -27,9 +27,9 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
               <div class="navbar-nav">
-                <a class="nav-item nav-link nav-link-text mx-1" id="home" href="/home">Home</a>
+                <a class="nav-item nav-link nav-link-text mx-1" id="index" href="/home">Home page</a>
                 {% if user.is_authenticated %}
                 <a class="nav-item nav-link nav-link-text mx-1" id="notes" href="/notes">Notes</a>
                 <a class="nav-item nav-link nav-link-text mx-1" id="quiz_me" href="/quiz_me">QuizMe</a>
@@ -39,7 +39,7 @@
                 <a class="nav-item nav-link nav-link-text mx-1" id="settings" href="/settings">Settings</a>
                 <a class="nav-item nav-link nav-link-text mx-1" id="logout" href="/logout">Logout</a>
                 {% else %}
-                <a class="nav-item nav-link nav-link-text mx-1" id="login" href="/">Login</a>
+                <a class="nav-item nav-link nav-link-text mx-1" id="login" href="/login">Login</a>
                 <a class="nav-item nav-link nav-link-text mx-1" id="signUp" href="/sign-up">Sign up</a>
                 {% endif %}
               </div>
@@ -63,8 +63,23 @@
         </div>
         {% endif %} {% endfor %} {% endif %} {% endwith %}
 
-        <div class="container">{% block content %} {% endblock %}</div>
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        {% block content %} {% endblock %}
 
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+            <div class="col-md-4 d-flex align-items-center">
+                <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+                    <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
+                </a>
+                <h5>Quicquiz</h5>
+            </div>
+
+            <ul class="nav col-md-4 justify-content-end list-unstyled d-flex me-5">
+                <li class="ms-3"><a class="bi bi-instagram text-body-secondary" href="https://www.instagram.com/ale_cappellari/"></a></li>
+                <li class="ms-3"><a class="bi bi-facebook text-body-secondary" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></a></li>
+                <li class="ms-3"><a class="bi bi-tiktok text-body-secondary" href="https://youtu.be/pZ2G6BoWy04?si=-L1uQEysjj8gVpTp"></a></li>
+            </ul>
+        </footer>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     </body>
 </html>
