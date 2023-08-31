@@ -25,45 +25,47 @@
 
         <div class="notes-hero-overlay rounded-3">
             <div class="notes-hero-text mb-4">
-                <h1>Manage your notes</h1>
-                <p>Introducing the Online Quiz Maker: revolutionize learning with engaging quizzes that boost knowledge retention, critical thinking, and fun!</p>
+                <h1 class="mx-4">Manage your notes</h1>
+                <p class="mx-4">Introducing the Online Quiz Maker: revolutionize learning with engaging quizzes that boost knowledge retention, critical thinking, and fun!</p>
             </div>
         </div>
     </a>
 </div>
 
-<div class="notes-hero-container m-1">
-    <a href="/quick_test">
-        <img
-            src="{{ url_for('static', filename='images/relax.jpg') }}"
-            class="notes-hero-background rounded-3"
-            alt="..."
-        />
+<div class="flex-container">
+    <div class="notes-hero-container m-1">
+        <a href="/quick_test">
+            <img
+                src="{{ url_for('static', filename='images/school_test.jpg') }}"
+                class="notes-hero-background rounded-3"
+                alt="..."
+            />
 
-        <div class="notes-hero-overlay rounded-3">
-            <div class="notes-hero-text mb-4">
-                <h1>Create a quick TTTest</h1>
-                <p>Introducing the Online Quiz Maker: revolutionize learning with engaging quizzes that boost knowledge retention, critical thinking, and fun!</p>
+            <div class="notes-hero-overlay rounded-3">
+                <div class="notes-hero-text mb-4">
+                    <h1 class="mx-4">Create a quick TTTest</h1>
+                    <p class="mx-4">Introducing the Online Quiz Maker: revolutionize learning with engaging quizzes that boost knowledge retention, critical thinking, and fun!</p>
+                </div>
             </div>
-        </div>
-    </a>
-</div>
+        </a>
+    </div>
 
-<div class="notes-hero-container m-1">
-    <a href="/personalized_test">
-        <img
-            src="{{ url_for('static', filename='images/note_writing.jpg') }}"
-            class="notes-hero-background rounded-3"
-            alt="..."
-        />
+    <div class="notes-hero-container m-1">
+        <a href="/custom_test">
+            <img
+                src="{{ url_for('static', filename='images/university_test.jpg') }}"
+                class="notes-hero-background rounded-3"
+                alt="..."
+            />
 
-        <div class="notes-hero-overlay rounded-3">
-            <div class="notes-hero-text mb-4">
-                <h1>Create a personalized TTTesst</h1>
-                <p>Introducing the Online Quiz Maker: revolutionize learning with engaging quizzes that boost knowledge retention, critical thinking, and fun!</p>
+            <div class="notes-hero-overlay rounded-3">
+                <div class="notes-hero-text mb-4">
+                    <h1 class="mx-4">Create a custom TTTest</h1>
+                    <p class="mx-4">Introducing the Online Quiz Maker: revolutionize learning with engaging quizzes that boost knowledge retention, critical thinking, and fun!</p>
+                </div>
             </div>
-        </div>
-    </a>
+        </a>
+    </div>
 </div>
 
 {% endblock %}

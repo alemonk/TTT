@@ -2,6 +2,10 @@ import backoff
 import openai
 import logging
 import os
+from .utils.prompt_check_answer_user import prompt_check_answer_user
+from .utils.prompt_check_answer_openai import prompt_check_answer_openai
+from .models import User
+from flask_login import current_user
 
 logging.basicConfig(level=logging.INFO)
 
@@ -15,11 +19,11 @@ def log_backoff(details):
 
 
 @backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_tries=10, on_backoff=log_backoff, base=10)
-def get_openai_response_with_backoff(prompt):
+def get_openai_response_with_backoff(user_prompt, system_prompt):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": "You are a teaching assistant who has to correct an answer."},
-                  {"role": "user", "content": prompt}
+        messages=[{"role": "system", "content": system_prompt},
+                  {"role": "user", "content": user_prompt}
                   ],
         temperature=0.5
     )
@@ -27,19 +31,16 @@ def get_openai_response_with_backoff(prompt):
 
 
 def check_answer(guess, question, answer):
+    # Get preferred language
+    user = User.query.get(current_user.id)
+    language = user.language
+
     # Construct the prompt
-    prompt = f"""
-    Question: {question}
-
-    Correct Answer: {answer}
-
-    Guess: {guess}
-
-    Validation: Is the guess "{guess}" a valid answer for the question "{question}" based on the correct answer "{answer}"? If it is not valid, respond with a possible correct answer."
-    """
+    user_prompt = prompt_check_answer_user(language, question, answer, guess)
+    system_prompt = prompt_check_answer_openai(language)
 
     # Generate AI response
-    response = get_openai_response_with_backoff(prompt)
+    response = get_openai_response_with_backoff(user_prompt, system_prompt)
     ai_output = response['choices'][0]['message']['content'].strip()
     print('\n\nAI response: ' + ai_output)
     return ai_output

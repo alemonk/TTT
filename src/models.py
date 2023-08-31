@@ -48,6 +48,7 @@ class User(db.Model, UserMixin):
     open_question_pref = db.Column(db.Integer)
     true_or_false_pref = db.Column(db.Integer)
     closed_question_pref = db.Column(db.Integer)
+    language = db.Column(db.String(2))
     notes = db.relationship('Note')
     tests = db.relationship('Test')
     folders = db.relationship('Folder')

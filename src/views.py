@@ -21,10 +21,8 @@ def quick_test():
 
 
 # Route for personalized test feature
-@views.route('/personalized_test')
+@views.route('/custom_test')
 @login_required
-def personalized_test():
-    print('\n\nPersonalized test route called')
-    return render_template("personalized_test.html", user=current_user)
-
-
+def custom_test():
+    print('\n\nCustom test route called')
+    return render_template("custom_test.html", user=current_user)

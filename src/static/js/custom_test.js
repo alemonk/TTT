@@ -148,7 +148,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                             submitButton.addEventListener('click', (function(containerDiv) {
                                 return function() {
                                     // Change text on the button to show that the answer was correctly saved
-                                    this.textContent='Answer saved!';
+                                    this.textContent='Saving the answer...';
 
                                     var guess = textarea.value;
                                     var question = data.question;
@@ -166,6 +166,10 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                     })
                                         .then(response => response.json())
                                         .then(data => {
+                                            // Change text on the button to show that the answer was correctly saved
+                                            this.textContent='Answer saved!';
+                                            this.className='btn btn-primary my-2';
+
                                             var answerP = document.createElement('p');
                                             answerP.textContent = data.response;
                                             answerP.classList.add('visually-hidden');
@@ -328,8 +332,6 @@ function createCheckAnswersButton(outputDiv, user_guesses) {
     // Create a div element to contain the buttons
     let buttonsDiv = document.createElement('div');
     outputDiv.appendChild(buttonsDiv);
-
-    console.log(user_guesses)
 
     // Create the 'check answers' button
     let checkAnswersButton = document.createElement('button');

@@ -4,6 +4,11 @@ import random
 import re
 import logging
 import os
+from .utils.prompt_openai import prompt_openai
+from .utils.prompt_user import prompt_user
+from .models import User
+from flask_login import current_user
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -36,22 +41,15 @@ def get_openai_response_with_backoff(prompt_question, system_content):
 
 
 def create_random_question(note, type_of_question='true or false'):
+    # Get preferred language
+    user = User.query.get(current_user.id)
+    language = user.language
+    print('language: ' + str(language))
+
     # Set up the prompt for openAI API
     truncated_note = select_random_note_portion(note, max_note_length=750)
-    prompt_question = "Ask one random question using a few sentences from the following: " + truncated_note
-
-    system_content = 'You are a helpful assistant who has to generate a question. ' + \
-                     'You are given a random portion of a book so, when you generate a question, avoid referring to its figures, ' + \
-                     'to its chapters, its lines or pages as if the user knew all the book by heart (see Remark 7). ' + \
-                     'The question should be more focused on the understanding of the note rather than its grammar. ' + \
-                     'Kind of question: ' + type_of_question + '.' + \
-                     "\nRemark 1: The output must be in the format 'QUESTION: [...] ? CORRECT ANSWER: [...] .' " + \
-                     "\nRemark 2: In the CORRECT ANSWER, explain also why the answer is correct." + \
-                     "\nRemark 3: In the case of a 'closed question' there must be A, B, C, or D as possible answers." + \
-                     "\nRemark 4: In the case of a 'true or false' question, the answer is TRUE/FALSE regardless of the language." + \
-                     "\nRemark 5: The language MUST be the same as the note, which is not necessarily English." + \
-                     "\nRemark 6: Give equal chance to the possible answers." + \
-                     "\nRemark 7: If you believe that you don't have enough information for generating a good quality question, output 'Not enough info'"
+    prompt_question = prompt_user(language, truncated_note)
+    system_content = prompt_openai(language, type_of_question)
 
     print('\n\nPrompt question: ' + prompt_question)
 
@@ -85,8 +83,10 @@ def select_random_note_portion(note, max_note_length):
         start_idx = random.randint(0, len(note) - max_note_length)
         truncated_note = note[start_idx:start_idx + max_note_length]
     else:
-        # TODO If the note is very short, then consider only a small portion
-        truncated_note = note
+        # If the note is very short, then consider only a small portion
+        truncated_note = select_random_note_portion(note, max_note_length/2)
+
+    print('Selected portions length: ' + str(len(truncated_note)))
     return truncated_note
 
 
@@ -95,7 +95,7 @@ def check_question_validity(question: str, answer: str, type_of_question: str) -
     if question == 'A LOT of people are using this app, what do you say? ':
         return True
 
-    if question == 'No enough info':
+    if question == 'Not enough info':
         return False
 
     # Check if the question is a valid true or false question
