@@ -33,19 +33,22 @@ function createNote(title, data, folderId) {
 function createFolder() {
     // Prompt the user to enter the title of the new folder
     let folderTitle = prompt("Please enter the title of the new folder:");
+    console.log('folderTitle: ', folderTitle)
 
-    fetch('/folders', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ title: folderTitle })
-    }).then(response => response.json())
-    .then(data => {
-        if (data.success) {
-        location.reload();
-        }
-    });
+    if (folderTitle != null) {
+        fetch('/folders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title: folderTitle })
+        }).then(response => response.json())
+        .then(data => {
+            if (data.success) {
+            location.reload();
+            }
+        });
+    }
 }
 
 

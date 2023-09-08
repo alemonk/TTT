@@ -7,6 +7,12 @@ function clearOutput() {
 document.getElementById('createTestButton').addEventListener('click', function() {
     clearOutput();
 
+    // Notes to use
+    var selectedNotes = Array.from(document.querySelectorAll('.form-check-input:checked'))
+        .map(checkbox => checkbox.nextElementSibling.textContent.trim());
+
+    console.log(selectedNotes);
+
     let numOpenQuestions = parseInt(document.getElementById("numOpenQuestions").value);
     let numTrueFalseQuestions = parseInt(document.getElementById("numTrueFalseQuestions").value);
     let numClosedQuestions = parseInt(document.getElementById("numClosedQuestions").value);
@@ -72,7 +78,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
     // Create a global queue instance
     var queue = new Queue();
 
-    createCancelButton(queue);
+    //createCancelButton(queue);
 
     // Create a function to process the queue
     function processQueue() {
@@ -96,7 +102,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ type_of_question: item.type_of_question })
+            body: JSON.stringify({ type_of_question: item.type_of_question, selected_notes: selectedNotes })
         })
             .then(response => response.json())
             .then(data => {

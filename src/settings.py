@@ -45,7 +45,7 @@ def get_preferences():
 
 
 # Define a route to handle language selection
-@settings.route('/language', methods=['POST'])
+@settings.route('/language', methods=['GET', 'POST'])
 def change_language():
     if request.method == 'POST':
         # Get the selected language from the request

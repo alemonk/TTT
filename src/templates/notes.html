@@ -63,11 +63,13 @@
         {% for note in folder.notes|reverse %}
         <div class="col">
             <div class="card bg-primary-subtle rounded-5 p-3 shadow">
+                <!--
                 <img
                     src="{{ url_for('static', filename='icons/TTT_icon.jpg') }}"
                     class="card-img-top rounded-3 mb-2"
                     alt="..."
                 >
+                 -->
 
                 <div class="rounded-3 p-2 bg-light mb-2">
                     {{ note.title }}

@@ -96,7 +96,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
         // Create a global queue instance
         var queue = new Queue();
 
-        createCancelButton(queue)
+        //createCancelButton(queue)
 
         // Create a function to process the queue
         function processQueue() {

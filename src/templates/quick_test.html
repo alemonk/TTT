@@ -24,12 +24,12 @@
     </div>
 
     <p class="d-inline-flex gap-1">
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNote" aria-expanded="false" aria-controls="collapseNote">
             Select notes
         </button>
     </p>
 
-    <div class="collapse" id="collapseExample">
+    <div class="collapse" id="collapseNote">
         {% for note in user.notes|reverse %}
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheck{{ loop.index }}" checked>
