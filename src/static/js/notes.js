@@ -90,16 +90,58 @@ function deleteNote(noteId) {
 
 
 function deleteFolder(folderId) {
-  fetch('/delete-folder', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ folderId })
-  }).then(response => response.json())
+    fetch('/delete-folder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ folderId })
+    }).then(response => response.json())
     .then(data => {
-      if (data.success) {
-        location.reload();
-      }
+        if (data.success) {
+            location.reload();
+        }
     });
+}
+
+
+function renameFolder(folderId) {
+    var newTitle = prompt("Please enter the new title for the folder:");
+    if (newTitle != null) {
+        fetch('/rename_folder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'id': folderId, 'title': newTitle })
+        }).then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Failed to rename the folder');
+            }
+        });
+    }
+}
+
+
+function renameFolderDescription(folderId) {
+    var newDescription = prompt("Please enter the new description for the folder:");
+    if (newDescription != null) {
+        fetch('/rename_folder_description', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'id': folderId, 'description': newDescription })
+        }).then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Failed to change folder description');
+            }
+        });
+    }
 }

@@ -78,7 +78,9 @@ document.getElementById('createTestButton').addEventListener('click', function()
     // Create a global queue instance
     var queue = new Queue();
 
-    //createCancelButton(queue);
+    const controller = new AbortController();
+    const signal = controller.signal;
+    createCancelButton(controller);
 
     // Create a function to process the queue
     function processQueue() {
@@ -102,6 +104,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
             headers: {
                 'Content-Type': 'application/json'
             },
+            signal,
             body: JSON.stringify({ type_of_question: item.type_of_question, selected_notes: selectedNotes })
         })
             .then(response => response.json())
@@ -308,7 +311,8 @@ document.getElementById('createTestButton').addEventListener('click', function()
                 // This is 'processQueue2'
                 processQueue();
 
-            });
+            })
+            .catch(error => console.error(error));
 
     }
 
@@ -435,7 +439,7 @@ function createAnswerButtons(answers, containerDiv) {
 }
 
 // Create the 'cancel' button
-function createCancelButton(queue) {
+function createCancelButton(controller) {
     // Create the 'cancel' button
     let cancelButton = document.createElement('button');
     cancelButton.type = 'button';
@@ -445,9 +449,6 @@ function createCancelButton(queue) {
 
     // In the event listener for the 'cancel' button, remove all elements from the queue
     cancelButton.addEventListener('click', function() {
-        while (!queue.isEmpty()) {
-            queue.dequeue();
-        }
-        console.log('Queue emptied');
+        controller.abort();
     });
 }

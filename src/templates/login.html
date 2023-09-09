@@ -2,59 +2,57 @@
 {% block title %}Login{% endblock %}
 {% block content%}
 
-<div class="container my-5">
+<div class="hero-container m-1">
+    <img
+        src="{{ url_for('static', filename='images/note_writing.jpg') }}"
+        class="hero-background rounded-3"
+        alt="..."
+    />
 
-  <div class="row">
-    <div class="col-md-6">
-      <div class="container-fluid">
-        <h1 class="display-5 fw-bold text-secondary">TTT</h1>
-        <p class="col-md-8 fs-4">Learn quickly and achieve your goals.</p>
-      </div>
-    </div>
+    <div class="hero-overlay rounded-3">
+        <div class="p-5 bg-light-subtle rounded-2" style="width: 50%;">
+            <form method="POST">
+                <h3 align="center">Login</h3>
 
-    <div class="col-md-6">
-        <div class="p-5 bg-primary-subtle rounded-5">
-          <form method="POST">
-            <h3 align="center">Login</h3>
+                <div class="form-floating mb-3">
+                    <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            placeholder="name@example.com"
+                    >
+                    <label for="email">Email address</label>
+                </div>
 
-            <div class="form-floating mb-3">
-              <input
-                      type="email"
-                      class="form-control border-primary-subtle"
-                      id="email"
-                      name="email"
-                      placeholder="name@example.com"
-              >
-              <label for="email">Email address</label>
-            </div>
+                <div class="form-floating">
+                    <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            name="password"
+                            placeholder="Password"
+                    >
+                    <label for="password">Password</label>
+                </div>
+                <br />
+                <button
+                        type="submit"
+                        class="btn btn-light py-2 px-4 border-dark"
+                >Login</button>
+            </form>
 
-            <div class="form-floating">
-              <input
-                      type="password"
-                      class="form-control border-primary-subtle"
-                      id="password"
-                      name="password"
-                      placeholder="Password"
-              >
-              <label for="password">Password</label>
-            </div>
             <br />
-            <button type="submit" class="btn btn-primary">Login</button>
-          </form>
-
-          <br />
-          <label for="sign-up-button">Don't you have an account?</label>
-          <br />
-          <a href="/sign-up">
-            <button
-                    type="button"
-                    class="btn btn-secondary my-3"
-                    id="sign-up-button"
-            >Sign up</button>
-          </a>
+            <p>Don't you have an account?</p>
+            <a href="/sign-up">
+                <button
+                        type="button"
+                        class="btn btn-light py-2 px-4 border-dark"
+                        id="sign-up-button"
+                >Sign up</button>
+            </a>
         </div>
     </div>
-  </div>
 </div>
 
 {% endblock %}

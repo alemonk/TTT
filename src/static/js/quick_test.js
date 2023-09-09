@@ -16,8 +16,8 @@ function createAnswerButtons(answers, containerDiv) {
     }
 }
 
-// Add an event listener to the createTestButton element
-document.getElementById('createTestButton').addEventListener('click', function() {
+
+function createTest() {
     clearOutput();
 
     fetch('/get_preferences', {
@@ -309,7 +309,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
     });
 
-});
+}
 
 
 // Create the 'cancel' button
@@ -329,3 +329,40 @@ function createCancelButton(queue) {
         console.log('Queue emptied');
     });
 }
+
+
+$(document).ready(function(){
+  $('.folder-checkbox').change(function() {
+    var folderId = $(this).val();
+    if(this.checked) {
+      $('.note-in-folder-' + folderId).prop('checked', true);
+    } else {
+      $('.note-in-folder-' + folderId).prop('checked', false);
+    }
+    updateCreateQuickTestButton();
+  });
+
+  $('.note-checkbox').change(function() {
+    var noteId = $(this).val();
+    var folderId = $(this).closest('.form-check').prevAll('.form-check').first().find('.folder-checkbox').val();
+    if($('.note-in-folder-' + folderId + ':checked').length == $('.note-in-folder-' + folderId).length) {
+      $('#folderCheck' + folderId).prop('checked', true);
+    } else {
+      $('#folderCheck' + folderId).prop('checked', false);
+    }
+    updateCreateQuickTestButton();
+  });
+
+  function updateCreateQuickTestButton() {
+    if($('.note-checkbox:checked').length > 0) {
+      $('#createQuickTestButton').removeClass('disabled');
+    } else {
+      $('#createQuickTestButton').addClass('disabled');
+    }
+  }
+
+  $('#createQuickTestButton').click(function() {
+    // Call the createTest function from quick_test.js
+    createTest();
+  });
+});

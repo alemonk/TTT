@@ -19,6 +19,7 @@ class Note(db.Model):
 class Folder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150))
+    description = db.Column(db.String(1000))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     notes = db.relationship('Note', backref='folder')
 

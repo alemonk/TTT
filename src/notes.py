@@ -157,3 +157,41 @@ def delete_folder():
 
     # Return failure response if folder does not exist or does not belong to current user
     return jsonify({'success': False})
+
+
+@notes.route('/rename_folder', methods=['POST'])
+@login_required
+def rename_folder():
+    data = request.get_json()
+    folder_id = data['id']
+    new_title = data['title']
+
+    folder = Folder.query.get(folder_id)
+    if folder.user_id == current_user.id:
+        folder.title = new_title
+        db.session.commit()
+
+        flash('Folder successfully renamed!', category='success')
+        return jsonify({'success': True})
+
+    flash('Failed to rename the folder', category='error')
+    return jsonify({'success': False})
+
+
+@notes.route('/rename_folder_description', methods=['POST'])
+@login_required
+def rename_folder_description():
+    data = request.get_json()
+    folder_id = data['id']
+    new_description = data['description']
+
+    folder = Folder.query.get(folder_id)
+    if folder.user_id == current_user.id:
+        folder.description = new_description
+        db.session.commit()
+
+        flash('Folder description successfully changed!', category='success')
+        return jsonify({'success': True})
+
+    flash('Failed to change the folder description', category='error')
+    return jsonify({'success': False})

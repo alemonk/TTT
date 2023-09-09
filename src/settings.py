@@ -26,8 +26,6 @@ def save_settings():
         db.session.commit()
         flash('Your Settings Have Been Successfully Updated', category='success')
 
-        return redirect(url_for('views.quick_test'))
-
     return render_template("settings.html", user=current_user)
 
 
@@ -66,6 +64,7 @@ def change_language():
 
         # Return a success message
         return jsonify({'success': True})
+
 
 @settings.route('/get_language', methods=['GET'])
 def get_language():

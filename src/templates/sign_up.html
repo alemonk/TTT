@@ -2,57 +2,74 @@
 {% block title %}Sign Up{% endblock %}
 {% block content %}
 
-<form method="POST">
-    <h3 align="center">Sign Up</h3>
+<div class="hero-container m-1">
+    <img
+        src="{{ url_for('static', filename='images/note_writing.jpg') }}"
+        class="hero-background rounded-3"
+        alt="..."
+    />
 
-    <div class="form-floating mb-3">
-        <input
-            type="email"
-            class="form-control"
-            id="email"
-            name="email"
-            placeholder="Enter Email"
-        />
-        <label for="email">Email address</label>
+    <div class="hero-overlay rounded-3">
+        <div class="p-5 bg-light-subtle rounded-2" style="width: 50%;">
+
+            <form method="POST">
+                <h3 align="center">Sign Up</h3>
+
+                <div class="form-floating mb-3">
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="email"
+                        name="email"
+                        placeholder="Enter Email"
+                    />
+                    <label for="email">Email address</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="username"
+                        name="username"
+                        placeholder="Enter username"
+                    />
+                    <label for="username">User name</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="password1"
+                        name="password1"
+                        placeholder="Enter password"
+                    />
+                    <label for="password1">Password</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="password2"
+                        name="password2"
+                        placeholder="Confirm password"
+                    />
+                    <label for="password2">Password confirmation</label>
+                </div>
+
+                <br />
+
+                <button
+                        type="submit"
+                        class="btn btn-light py-2 px-4 border-dark"
+                >Submit</button>
+
+            </form>
+
+        </div>
     </div>
-
-    <div class="form-floating mb-3">
-        <input
-            type="text"
-            class="form-control"
-            id="username"
-            name="username"
-            placeholder="Enter username"
-        />
-        <label for="username">User name</label>
-    </div>
-
-    <div class="form-floating mb-3">
-        <input
-            type="password"
-            class="form-control"
-            id="password1"
-            name="password1"
-            placeholder="Enter password"
-        />
-        <label for="password1">Password</label>
-    </div>
-
-    <div class="form-floating mb-3">
-        <input
-            type="password"
-            class="form-control"
-            id="password2"
-            name="password2"
-            placeholder="Confirm password"
-        />
-        <label for="password2">Password confirmation</label>
-    </div>
-
-    <br />
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-
-</form>
+</div>
 
 {% endblock %}
