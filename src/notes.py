@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, flash
+from flask import Blueprint, render_template, request, jsonify, flash, send_file
 from flask_login import login_required, current_user
 from .models import Note, Folder
 from . import db
@@ -70,16 +70,15 @@ def unpack_file(data, file_type=None):
             image = Image.open(data_stream)
             content = pytesseract.image_to_string(image)
 
+    print('content: ', content)
     return content
 
 
-# Route for getting note content
-@notes.route('/open-note', methods=['POST'])
+# Route for opening a note
+# TODO open also other kind of files
+@notes.route('/open-note/<int:note_id>', methods=['GET'])
 @login_required
-def get_note_data():
-    # Get note ID from form data
-    note_id = request.form.get('note_id')
-
+def open_note(note_id):
     # Query database for note with given ID
     note = Note.query.get(note_id)
 
@@ -87,8 +86,11 @@ def get_note_data():
     if not note or note.user_id != current_user.id:
         return jsonify({'error': 'Note not found'})
 
-    # Return note content as JSON response
-    return note.content
+    # Create a BytesIO object from the PDF data
+    pdf_io = io.BytesIO(note.data)
+
+    # Send the PDF data as a response
+    return send_file(pdf_io, mimetype='application/pdf')
 
 
 # Route for deleting a note

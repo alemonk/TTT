@@ -1,11 +1,9 @@
 .nav-link-text {
     font-size: 1.2rem;
 }
-
 .form-select {
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
-
 .hero-container {
     position: relative;
 }
@@ -35,4 +33,22 @@
 }
 .hero-text p {
     font-size: 1.5rem; /* Adjust font size as needed */
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+.footer {
+  flex-shrink: 0;
 }

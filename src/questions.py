@@ -45,7 +45,7 @@ def check_open_question():
     response = check_answer(guess, question, answer)
 
     # Print the value of response for debugging
-    print('\n\nresponse: ' + response)
+    # print('\n\nresponse: ' + response)
 
     return jsonify({'response': response})
 

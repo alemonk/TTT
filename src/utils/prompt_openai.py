@@ -9,8 +9,7 @@ def prompt_openai(language, type_of_question):
                         "\nCommento 1: L'output deve essere nel formato 'QUESTION: [domanda] ? CORRECT ANSWER: [risposta] .' " + \
                         "\nCommento 2: Nella CORRECT ANSWER, spiega anche perché la risposta è corretta." + \
                         "\nCommento 3: Nel caso di 'closed question', ci devono essere A, B, C o D come possibili soluzioni." + \
-                        "\nCommento 4: Nel caso di 'true or false', la risposta può essere TRUE o FALSE." + \
-                        "\nCommento 5: Se pensi di non avere abbastanza informazioni per generare una domanda di buona qualità, genera 'Not enough info'."
+                        "\nCommento 4: Nel caso di 'true or false', la risposta può essere TRUE o FALSE."
 
     else:
         openai_prompt = "You are a helpful assistant who has to generate a question. " + \
@@ -21,7 +20,6 @@ def prompt_openai(language, type_of_question):
                         "\nRemark 1: The output must be in the format 'QUESTION: [question] ? CORRECT ANSWER: [answer] .' " + \
                         "\nRemark 2: In the CORRECT ANSWER, explain also why the answer is correct." + \
                         "\nRemark 3: In the case of a 'closed question' there must be A, B, C, or D as possible answers." + \
-                        "\nRemark 4: In the case of a 'true or false' question, the answer is either TRUE or FALSE." + \
-                        "\nRemark 5: If you believe that you don't have enough information for generating a good quality question, output 'Not enough info'."
+                        "\nRemark 4: In the case of a 'true or false' question, the answer is either TRUE or FALSE."
 
     return openai_prompt

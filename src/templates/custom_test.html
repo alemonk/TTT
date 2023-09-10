@@ -12,115 +12,84 @@
     {% block title %}Custom Test{% endblock %}
     {% block content %}
 
-    <br />
-    <h3 align="center">Custom Test</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-sm-12">
 
-    <br />
-    <div class="container text-center">
-        <div class="row align-items-start">
-            <div class="col">
-                <!-- Number of open questions -->
-                <div class="container">
-                    <p>Number of open questions:</p>
-                    <select
-                            class="form-select"
-                            id="numOpenQuestions"
-                            aria-label="Default select example"
-                    >
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
+                <div align="center" id="crateTestDiv">
+                    <br />
+                    <!-- Create test button -->
+                    <button type="button" class="btn btn-secondary" id="createTestButton">
+                        Create Test
+                    </button>
+                </div>
+
+                <div class="d-flex flex-column p-3 bg-light" style="height: 100%;">
+                    <ul class="nav nav-pills flex-column mb-auto">
+
+                        <li class="nav-item">
+                            <!-- Number of open questions -->
+                            <h5>Open questions</h5>
+                            <div class="container">
+                                <input type="number" id="numOpenQuestions" name="numOpenQuestions" min="0" max="10" value="1">
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <!-- Number of true or false questions -->
+                            <br />
+                            <h5>True or false</h5>
+                            <div class="container">
+                                <input type="number" id="numTrueFalseQuestions" name="numTrueFalseQuestions" min="0" max="10" value="1">
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <!-- Number of closed questions -->
+                            <br />
+                            <h5>Closed questions</h5>
+                            <div class="container">
+                                <input type="number" id="numClosedQuestions" name="numClosedQuestions" min="0" max="10" value="1">
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <br />
+                            <h5>Select Notes</h5>
+                            {% for folder in user.folders %}
+                            <div class="form-check">
+                                <input class="form-check-input folder-checkbox" type="checkbox" value="{{ folder.id }}" id="folderCheck{{ folder.id }}" checked>
+                                <label class="form-check-label" for="folderCheck{{ folder.id }}">
+                                {{ folder.title }}
+                                </label>
+                            </div>
+                            {% for note in folder.notes %}
+                            <div class="form-check ms-3">
+                                <input class="form-check-input note-checkbox note-in-folder-{{ folder.id }}" type="checkbox" value="{{ note.id }}" id="noteCheck{{ note.id }}" checked>
+                                <label class="form-check-label" for="noteCheck{{ note.id }}">
+                                {{ note.title }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                            {% endfor %}
+                        </li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="col">
-                <!-- Number of open questions -->
-                <div class="container">
-                    <p>Number of true or false questions:</p>
-                    <select
-                            class="form-select"
-                            id="numTrueFalseQuestions"
-                            aria-label="Default select example"
-                    >
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-                </div>
-            </div>
+            <!-- Main content -->
+            <div class="col-md-9 col-sm-12">
 
-            <div class="col">
-                <!-- Number of open questions -->
-                <div class="container">
-                    <p>Number of closed questions:</p>
-                    <select
-                            class="form-select"
-                            id="numClosedQuestions"
-                            aria-label="Default select example"
-                    >
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-                </div>
-            </div>
+                <h3 align="center">Custom Test</h3>
 
+                <!-- Output divs -->
+                <br />
+                <div id="output" style="margin-top: 10px; text-align: left;"></div>
+
+            </div>
         </div>
     </div>
-
-    <div align="center" id="crateTestDiv">
-        <br />
-        <!-- Create test button -->
-        <button type="button" class="btn btn-secondary" id="createTestButton">
-            Create Test
-        </button>
-    </div>
-
-    <p class="d-inline-flex gap-1">
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNote" aria-expanded="false" aria-controls="collapseNote">
-            Select notes
-        </button>
-    </p>
-
-    <div class="collapse" id="collapseNote">
-        {% for note in user.notes|reverse %}
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheck{{ loop.index }}" checked>
-                <label class="form-check-label" for="flexCheck{{ loop.index }}">
-                    {{ note.title }}
-                </label>
-            </div>
-        {% endfor %}
-    </div>
-
-    <!-- Output divs -->
-    <br />
-    <div id="output" style="margin-top: 10px; text-align: left;"></div>
 
     {% endblock %}
 </body>

@@ -4,7 +4,7 @@ function clearOutput() {
 }
 
 // Add an event listener to the createTestButton element
-document.getElementById('createTestButton').addEventListener('click', function() {
+function createTest() {
     clearOutput();
 
     // Notes to use
@@ -25,13 +25,18 @@ document.getElementById('createTestButton').addEventListener('click', function()
     // Create a container div element for the progress bar
     var containerDiv = document.createElement('div');
     containerDiv.style.display = 'block';
-    containerDiv.style.width = '100%';
+    containerDiv.style.width = '90%';
+    containerDiv.style.marginLeft = 'auto';
+    containerDiv.style.marginRight = 'auto';
 
     // Create a progress bar element
     var progressBar = document.createElement('div');
     progressBar.className = 'progress bg-primary';
     progressBar.role = 'progressbar';
     progressBar.style.width = '0%';
+    progressBar.style.display = 'flex';
+    progressBar.style.justifyContent = 'center';
+    progressBar.style.alignItems = 'center';
 
     containerDiv.appendChild(progressBar);
 
@@ -129,7 +134,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
                         // Create a container div element for the question and answer
                         var containerDiv=document.createElement('div');
-                        containerDiv.className='p-5 bg-primary-subtle rounded-5 my-3';
+                        containerDiv.className='card bg-light-subtle rounded-2 m-3 p-3 shadow';
                         outputDiv.appendChild(containerDiv);
 
                         // Create a p element for the question
@@ -180,6 +185,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
                                             this.className='btn btn-primary my-2';
 
                                             var answerP = document.createElement('p');
+                                            answerP.className = 'answer card-footer bg-light-subtle';
                                             answerP.textContent = data.response;
                                             answerP.classList.add('visually-hidden');
                                             containerDiv.appendChild(answerP);
@@ -222,7 +228,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
                                                 // Display the new answer
                                                 var answerP = document.createElement('p');
-                                                answerP.className = 'answer';
+                                                answerP.className = 'answer card-footer bg-light-subtle';
                                                 answerP.textContent = data.response;
                                                 answerP.classList.add('visually-hidden');
                                                 containerDiv.appendChild(answerP);
@@ -280,7 +286,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
                                                 // Display the new answer
                                                 var answerP = document.createElement('p');
-                                                answerP.className = 'answer';
+                                                answerP.className = 'answer card-footer bg-light-subtle';
                                                 answerP.textContent = data.response;
                                                 answerP.classList.add('visually-hidden');
                                                 containerDiv.appendChild(answerP);
@@ -333,8 +339,7 @@ document.getElementById('createTestButton').addEventListener('click', function()
 
     // Start processing the queue
     processQueue();
-
-});
+}
 
 
 // Define a function to create the buttons
@@ -427,15 +432,26 @@ function errorMessage() {
 
 // Create answer buttons and append them to the container div element
 function createAnswerButtons(answers, containerDiv) {
+    // Create a row element
+    var row = document.createElement('div');
+    row.className = 'row';
+    row.style.width = 'fit-content';
+    row.style.marginLeft = 'auto';
+    row.style.marginRight = 'auto';
+
     for (var i = 0; i < answers.length; i++) {
         var answerButton = document.createElement('button');
         answerButton.type = 'button';
         answerButton.className = 'btn btn-secondary my-2';
         answerButton.style.marginRight = '5px';
         answerButton.textContent = answers[i].label;
+        answerButton.style.width = 'fit-content';
         answerButton.style.backgroundColor = answers[i].color;
-        containerDiv.appendChild(answerButton);
+        // Append the answer button to the row element
+        row.appendChild(answerButton);
     }
+    // Append the row element to the container div
+    containerDiv.appendChild(row);
 }
 
 // Create the 'cancel' button
@@ -452,3 +468,40 @@ function createCancelButton(controller) {
         controller.abort();
     });
 }
+
+
+$(document).ready(function(){
+    $('.folder-checkbox').change(function() {
+        var folderId = $(this).val();
+        if(this.checked) {
+            $('.note-in-folder-' + folderId).prop('checked', true);
+        } else {
+            $('.note-in-folder-' + folderId).prop('checked', false);
+        }
+    updateCreateTestButton();
+    });
+
+    $('.note-checkbox').change(function() {
+        var noteId = $(this).val();
+        var folderId = $(this).closest('.form-check').prevAll('.form-check').first().find('.folder-checkbox').val();
+        if($('.note-in-folder-' + folderId + ':checked').length == $('.note-in-folder-' + folderId).length) {
+            $('#folderCheck' + folderId).prop('checked', true);
+        } else {
+            $('#folderCheck' + folderId).prop('checked', false);
+        }
+        updateCreateTestButton();
+    });
+
+    function updateCreateTestButton() {
+        if($('.note-checkbox:checked').length > 0) {
+            $('#createTestButton').removeClass('disabled');
+        } else {
+            $('#createTestButton').addClass('disabled');
+        }
+    }
+
+    $('#createTestButton').click(function() {
+        // Call the createTest function from quick_test.js
+        createTest();
+    });
+});

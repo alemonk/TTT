@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html>
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="{{ url_for('static', filename='css/notes.css') }}"
+    >
+
     <script defer
         type="text/javascript"
         src="{{ url_for('static', filename='js/notes.js') }}"
@@ -14,154 +20,147 @@
 
 <body>
 
-{% extends "base.html" %}
-{% block title %}Notes{% endblock %}
-{% block content %}
+    {% extends "base.html" %}
+    {% block title %}Notes{% endblock %}
+    {% block content %}
 
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-2">
-            <div class="d-flex flex-column p-3 bg-light" style="height: 100%;">
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="createFolder()">Add folder</a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#selectNotesModal">Select notes</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Select Notes Modal -->
-        <div class="modal fade" id="selectNotesModal" tabindex="-1" aria-labelledby="selectNotesModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="selectNotesModalLabel">Select Notes</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        {% for folder in user.folders %}
-                        <div class="form-check">
-                            <input class="form-check-input folder-checkbox" type="checkbox" value="{{ folder.id }}" id="folderCheck{{ folder.id }}">
-                            <label class="form-check-label" for="folderCheck{{ folder.id }}">
-                            {{ folder.title }}
-                            </label>
-                        </div>
-                        {% for note in folder.notes %}
-                        <div class="form-check ms-3">
-                            <input class="form-check-input note-checkbox note-in-folder-{{ folder.id }}" type="checkbox" value="{{ note.id }}" id="noteCheck{{ note.id }}">
-                            <label class="form-check-label" for="noteCheck{{ note.id }}">
-                            {{ note.title }}
-                            </label>
-                        </div>
-                        {% endfor %}
-                        {% endfor %}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary disabled" id="createQuickTestButton">Create quick test</button>
-                    </div>
-                    <!-- Output div -->
-                    <br />
-                    <div id="output" style="margin-top: 10px; text-align: left;"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 col-sm-12">
+                <div class="d-flex flex-column p-3 bg-light" style="height: 100%;">
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" onclick="createFolder()">Add folder</a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#selectNotesModal">Select notes</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
 
-        <!-- Main content -->
-        <div class="col-10">
-            <!-- Display list of folders -->
-            <div class="row row-cols-1 row-cols-sm-2 g-4">
-                {% for folder in user.folders %}
-                <div class="col">
-                    <div class="card bg-light-subtle rounded-2 p-3 shadow">
-                        <div class="row g-0">
-                            <div class="col-md-6">
-                                <img
-                                        src="{{ url_for('static', filename='images/note_writing.jpg') }}"
-                                        class="img-fluid rounded-1"
-                                        alt="..."
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#collapseFolder{{ folder.id }}"
-                                >
+            <!-- Select Notes Modal -->
+            <div class="modal fade" id="selectNotesModal" tabindex="-1" aria-labelledby="selectNotesModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="selectNotesModalLabel">Select Notes</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% for folder in user.folders %}
+                            <div class="form-check">
+                                <input class="form-check-input folder-checkbox" type="checkbox" value="{{ folder.id }}" id="folderCheck{{ folder.id }}">
+                                <label class="form-check-label" for="folderCheck{{ folder.id }}">
+                                {{ folder.title }}
+                                </label>
                             </div>
-                            <div class="col-md-6">
-                                <!-- more options -->
-                                <div class="dropdown d-flex justify-content-end">
-                                    <a href="#" role="button" id="dropdownMenuLinkMoreOptions{{ folder.id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots-vertical"></i>
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLinkMoreOptions{{ folder.id }}">
-                                        <li><a class="dropdown-item" href="#" onclick="renameFolder({{ folder.id }})">Rename Folder</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="renameFolderDescription({{ folder.id }})">Change folder description</a></li>
-                                        <li><a class="dropdown-item" onclick="deleteFolder({{ folder.id }})" href="#">Delete Folder</a></li>
-                                    </ul>
-                                </div>
+                            {% for note in folder.notes %}
+                            <div class="form-check ms-3">
+                                <input class="form-check-input note-checkbox note-in-folder-{{ folder.id }}" type="checkbox" value="{{ note.id }}" id="noteCheck{{ note.id }}">
+                                <label class="form-check-label" for="noteCheck{{ note.id }}">
+                                {{ note.title }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary disabled" id="createQuickTestButton">Create quick test</button>
+                        </div>
+                        <!-- Output div -->
+                        <br />
+                        <div id="output" style="margin-top: 10px; text-align: left;"></div>
+                    </div>
+                </div>
+            </div>
 
-                                <div class="card-body">
-                                    <h4 class="card-title">{{ folder.title }}</h4>
+            <!-- Main content -->
+            <div class="col-md-10 col-sm-12">
+                <!-- Display list of folders -->
+                <div class="row row-cols-1 row-cols-sm-2 g-4">
+                    {% for folder in user.folders %}
+                    <div class="col">
+                        <div class="card bg-light-subtle rounded-2 p-3 shadow">
+                            <div class="row g-0">
+                                <div class="col-md-6">
+                                    <img
+                                            src="{{ url_for('static', filename='images/note_writing.jpg') }}"
+                                            class="img-fluid rounded-1"
+                                            alt="..."
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseFolder{{ folder.id }}"
+                                    >
+                                </div>
+                                <div class="col-md-6">
+                                    <!-- more options -->
+                                    <div class="dropdown d-flex justify-content-end">
+                                        <a href="#" role="button" id="dropdownMenuLinkMoreOptions{{ folder.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </a>
+                                        <ul class="dropdown-menu shadow" aria-labelledby="dropdownMenuLinkMoreOptions{{ folder.id }}">
+                                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('formFileMultiple{{ folder.id }}').click()">Add file</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="renameFolder({{ folder.id }})">Rename Folder</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="renameFolderDescription({{ folder.id }})">Change folder description</a></li>
+                                            <li><a class="dropdown-item" onclick="deleteFolder({{ folder.id }})" href="#">Delete Folder</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <h4 class="card-title">{{ folder.title }}</h4>
+                                    </div>
+                                </div>
+                                <div class="card-footer mt-3 bg-light-subtle">
                                     <p class="card-text">{{ folder.description }}</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Display notes associated with the current folder -->
-                    <div class="collapse" id="collapseFolder{{ folder.id }}">
-                        <ul class="list-group">
-                            {% for note in folder.notes|reverse %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                {{ note.title }}
-                                <span>
-                                    <!-- quick test -->
-                                    <div class="dropdown">
-                                        <a href="#" role="button" id="dropdownMenuLinkQuickTest{{ note.id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-card-list"></i>
-                                        </a>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLinkQuickTest{{ note.id }}">
-                                            <li><a class="dropdown-item" href="#" onclick="#">Create quick test</a></li>
-                                        </ul>
-                                    </div>
+                        <!-- Display notes associated with the current folder -->
+                        <div class="collapse" id="collapseFolder{{ folder.id }}">
+                            <ul class="list-group mt-4 shadow">
+                                {% for note in folder.notes|reverse %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-opacity-50">
+                                    <!-- Link the note title to the /open-note route -->
+                                    <a href="/open-note/{{ note.id }}" target="_blank">{{ note.title }}</a>
 
                                     <!-- more options -->
                                     <div class="dropdown">
                                         <a href="#" role="button" id="dropdownMenuLinkMoreOptions{{ note.id }}" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="bi bi-three-dots-vertical"></i>
                                         </a>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLinkMoreOptions{{ note.id }}">
+                                        <ul class="dropdown-menu shadow" aria-labelledby="dropdownMenuLinkMoreOptions{{ note.id }}">
                                             <li><a class="dropdown-item" href="#">Rename note</a></li>
                                             <li><a class="dropdown-item" onclick="deleteNote({{ note.id }})" href="#">Delete note</a></li>
                                         </ul>
                                     </div>
-                                </span>
-                            </li>
-                            {% endfor %}
-                        </ul>
+                                </li>
+                                {% endfor %}
+                            </ul>
 
-                        <!-- Add "Add File" button to each folder -->
-                        <div class="mb-3">
-                            <input type="file" id="formFileMultiple{{ folder.id }}" multiple style="display: none;" onchange="handleFiles(this.files, {{ folder.id }})">
-                            <button
-                                    type="button"
-                                    class="btn btn-secondary my-4"
-                                    onclick="document.getElementById('formFileMultiple{{ folder.id }}').click()"
-                            >
-                                Add file
-                            </button>
-                            <br />
+                            <!-- Add "Add File" button to each folder -->
+                            <div class="mb-3">
+                                <input type="file" id="formFileMultiple{{ folder.id }}" multiple style="display: none;" onchange="handleFiles(this.files, {{ folder.id }})">
+                                <button
+                                        type="button"
+                                        class="btn btn-secondary rounded-circle my-4 shadow"
+                                        style="width: 40px; height: 40px;"
+                                        onclick="document.getElementById('formFileMultiple{{ folder.id }}').click()"
+                                >
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
         </div>
     </div>
-</div>
 
-{% endblock %}
+    {% endblock %}
 
 </body>
 

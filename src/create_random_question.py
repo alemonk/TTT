@@ -68,7 +68,7 @@ def create_random_question(note, type_of_question='true or false'):
         truncated_note = select_random_note_portion(note, max_note_length=750)
         prompt_question = "Ask one random question using a few sentences from the following: " + truncated_note
         ai_output = get_openai_response_with_backoff(prompt_question, system_content)
-        print('\n\nAI response: ' + ai_output)
+        #print('\n\nAI response: ' + ai_output)
         [question, answer] = split_string(ai_output)
         is_valid = check_question_validity(question, answer, type_of_question)
 
@@ -94,9 +94,6 @@ def check_question_validity(question: str, answer: str, type_of_question: str) -
     # Check if rpm are too many
     if question == 'A LOT of people are using this app, what do you say? ':
         return True
-
-    if question == 'Not enough info':
-        return False
 
     # Check if the question is a valid true or false question
     if type_of_question == 'true or false':
