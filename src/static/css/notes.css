@@ -1,3 +1,9 @@
 img:hover {
     cursor: pointer;
+    transform: scale(1.05); /* Adjust scale as needed */
+    transition: transform 0.2s ease-in-out; /* Adjust transition speed as needed */
+}
+
+img {
+    transition: transform 0.3s ease-in-out; /* Adjust transition speed as needed */
 }
