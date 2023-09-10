@@ -34,7 +34,7 @@
                             <a href="#" class="nav-link" onclick="createFolder()">Add folder</a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#selectNotesModal">Select notes</a>
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#selectNotesModal">Quick test</a>
                         </li>
                     </ul>
                 </div>
@@ -88,7 +88,7 @@
                                 <div class="col-md-6">
                                     <img
                                             src="{{ url_for('static', filename='images/note_writing.jpg') }}"
-                                            class="img-fluid rounded-1"
+                                            class="img-fluid rounded-1 shadow"
                                             alt="..."
                                             data-bs-toggle="collapse"
                                             data-bs-target="#collapseFolder{{ folder.id }}"
@@ -132,7 +132,7 @@
                                             <i class="bi bi-three-dots-vertical"></i>
                                         </a>
                                         <ul class="dropdown-menu shadow" aria-labelledby="dropdownMenuLinkMoreOptions{{ note.id }}">
-                                            <li><a class="dropdown-item" href="#">Rename note</a></li>
+                                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#selectNotesModal" href="#" >Quick test</a></li>
                                             <li><a class="dropdown-item" onclick="deleteNote({{ note.id }})" href="#">Delete note</a></li>
                                         </ul>
                                     </div>
