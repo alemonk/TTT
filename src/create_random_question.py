@@ -1,4 +1,7 @@
-import openai
+from openai import OpenAI
+from .openai_key import openai_key
+
+client = OpenAI(api_key=openai_key)
 import backoff
 import random
 import re
@@ -8,34 +11,36 @@ from .utils.prompt_openai import prompt_openai
 from .utils.prompt_user import prompt_user
 from .models import User
 from flask_login import current_user
-
+from openai._exceptions import RateLimitError, OpenAIError
 
 logging.basicConfig(level=logging.INFO)
 
 # Set your OpenAI API key
 openai_key = os.getenv('api_key')
-openai.api_key = openai_key
 
 
 def log_backoff(details):
     logging.info(f"Backing off {details['wait']} seconds after {details['tries']} tries")
 
 
-@backoff.on_exception(backoff.constant, (openai.error.RateLimitError, openai.error.ServiceUnavailableError), max_tries=10, on_backoff=log_backoff, interval=10)
+@backoff.on_exception(
+    backoff.constant,
+    (RateLimitError, OpenAIError),  # OpenAIError replaces ServiceUnavailableError
+    max_tries=10,
+    on_backoff=log_backoff,
+    interval=10
+)
 def get_openai_response_with_backoff(prompt_question, system_content):
     print('\n\nrequest to openai with backoff')
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": system_content},
-                  {"role": "user", "content": prompt_question}
-                  ],
-        temperature=0.8,
-        frequency_penalty=0.3,
-        presence_penalty=0.8,
-    )
+    response = client.chat.completions.create(model="gpt-3.5-turbo",
+    messages=[{"role": "system", "content": system_content},
+              {"role": "user", "content": prompt_question}],
+    temperature=0.8,
+    frequency_penalty=0.3,
+    presence_penalty=0.8)
     print('\n\nresponse: ' + str(response))
-    response = response['choices'][0]['message']['content']
+    response = response.choices[0].message.content
 
     return response
 
